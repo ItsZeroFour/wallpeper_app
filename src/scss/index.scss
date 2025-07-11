@@ -1,0 +1,129 @@
+@use "./reset";
+@use "./vars";
+@use "./fonts";
+
+/* BASIC SETTINGS */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+
+  background: var(--color-white);
+  color: var(--color-dark);
+
+  overflow-x: hidden !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-block-start: 75px;
+  min-height: 100vh;
+  // font-size: calc(6px + (20 - 6) * ((100vw - 600px) / (1920 - 600)));
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+}
+
+::-webkit-scrollbar {
+  background: none;
+  display: none;
+  width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: none;
+  display: none;
+}
+
+.container {
+  max-width: 1800px;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a {
+  color: inherit;
+  font-family: inherit;
+  line-height: 140%;
+}
+
+ul,
+li {
+  list-style-type: none;
+}
+
+// .icon-class {
+//   fill: #fff !important;
+//   stroke: #0d91ff !important;
+// }
+
+/* Отступ между элементами */
+.slick-slide {
+  padding: 0 5px; /* Горизонтальный отступ */
+}
+
+/* Убираем отступы у крайних элементов */
+.slick-list {
+  margin: 0 -5px;
+}
+
+.slick-prev {
+  left: -35px !important;
+  width: 30px !important;
+  height: 60px !important;
+  background: #e2e2e2 !important;
+  border-radius: 300px;
+
+  transition: all 0.2s ease;
+}
+.slick-next {
+  right: -35px !important;
+  width: 30px !important;
+  height: 60px !important;
+  background: #e2e2e2 !important;
+  border-radius: 300px;
+
+  transition: all 0.2s ease;
+}
+
+/* Внешний вид */
+.slick-prev:before,
+.slick-next:before {
+  color: none !important; /* Цвет стрелки */
+  font-size: 24px;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  background: var(--color-blue) !important;
+}
+
+/* Отключенное состояние */
+.slick-disabled:before {
+  opacity: 0.3;
+}

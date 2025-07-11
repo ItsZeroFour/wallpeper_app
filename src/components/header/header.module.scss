@@ -1,0 +1,27 @@
+.header {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.header__wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  nav {
+    ul {
+      display: flex;
+      gap: 20px;
+
+      li {
+        a {
+          font-size: 18px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: var(--color-blue);
+          }
+        }
+      }
+    }
+  }
+}
