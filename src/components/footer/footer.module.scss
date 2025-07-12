@@ -41,6 +41,10 @@
           font-size: 18px;
           font-family: "Roboto-md", sans-serif;
           font-weight: 500;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
@@ -59,6 +63,10 @@
     font-family: "Roboto-md", sans-serif;
     font-weight: 400;
     opacity: 0.7;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -69,7 +77,7 @@
     display: flex;
     gap: 20px;
 
-    li {
+    li > a {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -78,9 +86,13 @@
       width: 50px;
       height: 50px;
       border-radius: 10px;
-      padding-top: 5px;
 
       background: rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(13, 146, 255, 0.2);
+      }
     }
   }
 

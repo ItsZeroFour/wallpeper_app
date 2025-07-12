@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import style from "./cards.module.scss";
 import iphone from "../../assets/images/cards/iPhone.png";
@@ -18,6 +18,7 @@ import "slick-carousel/slick/slick-theme.css";
 import X from "../../assets/images/cards/x.svg?react";
 import Check from "../../assets/images/cards/check.svg?react";
 import Close from "../../assets/icons/close.svg?react";
+import Popup from "../popup/Popup";
 
 // Анимации
 const containerVariants = {
@@ -116,10 +117,13 @@ const Cards = () => {
   ];
 
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-400px" });
   const sliderRef = useRef();
+
+  const isInView = useInView(ref, { once: true, margin: "-400px" });
+
   const [activeCards, setActiveCards] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleAddCard = () => {
     const currentSlideIndex = sliderRef.current.innerSlider.state.currentSlide;
@@ -151,6 +155,15 @@ const Cards = () => {
       selectedItems.filter((_, i) => activeCards.indexOf(index) !== i)
     );
   };
+
+  useEffect(() => {
+    if (selectedItems.length === 3) {
+      const timer = setTimeout(() => {
+        setIsPopupOpen(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedItems]);
 
   const settings = {
     dots: false,
@@ -305,6 +318,12 @@ const Cards = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {isPopupOpen && (
+        <div onClick={() => setIsPopupOpen(false)}>
+          <Popup onClose={() => setIsPopupOpen(false)} selectedItems={selectedItems} />
+        </div>
+      )}
     </motion.section>
   );
 };
