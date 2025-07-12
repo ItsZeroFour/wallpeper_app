@@ -74,6 +74,11 @@
     padding: 15px 30px;
     border-radius: 10px;
     background: var(--color-blue);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 }
 

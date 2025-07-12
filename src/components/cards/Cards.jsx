@@ -115,7 +115,7 @@ const Cards = () => {
   ];
 
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-400px" });
   const sliderRef = useRef();
 
   const settings = {
@@ -141,7 +141,7 @@ const Cards = () => {
   };
 
   return (
-    <motion.div className={style.cards} ref={ref}>
+    <motion.section className={style.cards} ref={ref}>
       <div className="container">
         <motion.div
           className={style.cards__wrapper}
@@ -205,7 +205,7 @@ const Cards = () => {
           </motion.div>
         </motion.div>
       </div>
-    </motion.div>
+    </motion.section>
   );
 };
 

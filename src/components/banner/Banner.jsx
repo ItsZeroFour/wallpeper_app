@@ -4,7 +4,7 @@ import style from "./banner.module.scss";
 
 const Banner = () => {
   return (
-    <div className={style.banner}>
+    <section className={style.banner}>
       <div className="container">
         <div className={style.banner__wrapper}>
           <h2>
@@ -16,7 +16,7 @@ const Banner = () => {
           <Link to="/">Lakukan deposit sekarang</Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

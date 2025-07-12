@@ -27,7 +27,7 @@ const Head = () => {
   };
 
   return (
-    <div className={style.head}>
+    <section className={style.head}>
       <div className="container">
         <motion.div
           className={style.head__wrapper}
@@ -59,7 +59,7 @@ const Head = () => {
           </motion.div>
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 
