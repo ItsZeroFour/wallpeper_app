@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import style from "./cards.module.scss";
 import iphone from "../../assets/images/cards/iPhone.png";
@@ -17,6 +17,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import X from "../../assets/images/cards/x.svg?react";
 import Check from "../../assets/images/cards/check.svg?react";
+import Close from "../../assets/icons/close.svg?react";
 
 // Анимации
 const containerVariants = {
@@ -51,6 +52,15 @@ const buttonTap = {
   scale: 0.95,
 };
 
+const cardVariants = {
+  hidden: { scale: 0.95, opacity: 0.8 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: { duration: 0.3 },
+  },
+};
+
 const Cards = () => {
   const items = [
     {
@@ -58,55 +68,46 @@ const Cards = () => {
       title: "Keberanian",
       text: "Saya tidak membiarkan rasa takut mengambil keputusan untuk saya",
     },
-
     {
       img: Item2,
       title: "Kehormatan",
       text: "Saya melakukan hal yang benar, bahkan ketika tidak ada yang melihat",
     },
-
     {
       img: Item3,
       title: "Keteguhan",
       text: "Saya tidak menyimpang dari jalan sampai saya mencapai tujuan saya",
     },
-
     {
       img: Item4,
       title: "Kesetiaan",
       text: "Saya selalu menjadi pendukung bagi orang-orang yang",
     },
-
     {
       img: Item5,
       title: "Tanggung Jawab",
       text: "Gue pegang janji gue — itu nunjukin kekuatan hati gue",
     },
-
     {
       img: Item6,
       title: "Pengendalian Diri",
       text: "Gue bisa ngontrol diri — itu kekuatan gue",
     },
-
     {
       img: Item7,
       title: "Kesabaran",
       text: "Perubahan gede butuh waktu dan kesabaran",
     },
-
     {
       img: Item8,
       title: "Ketekunan",
       text: "Gue tetep jalan terus, walau rasanya perjalanan masih jauh",
     },
-
     {
       img: Item9,
       title: "Kebaikan Hati",
       text: "Gue ngelakuin hal baik tanpa ngarepin balasan",
     },
-
     {
       img: Item10,
       title: "Pengembangan Diri",
@@ -117,6 +118,39 @@ const Cards = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-400px" });
   const sliderRef = useRef();
+  const [activeCards, setActiveCards] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleAddCard = () => {
+    const currentSlideIndex = sliderRef.current.innerSlider.state.currentSlide;
+    const selectedIndex = (currentSlideIndex + 2) % items.length;
+
+    if (!activeCards.includes(selectedIndex) && selectedItems.length < 3) {
+      setActiveCards([...activeCards, selectedIndex]);
+      setSelectedItems([...selectedItems, items[selectedIndex].text]);
+    }
+    sliderRef.current.slickNext();
+  };
+
+  const handleRemoveCard = () => {
+    const currentSlideIndex = sliderRef.current.innerSlider.state.currentSlide;
+    const selectedIndex = (currentSlideIndex + 2) % items.length;
+
+    if (activeCards.includes(selectedIndex)) {
+      setActiveCards(activeCards.filter((index) => index !== selectedIndex));
+      setSelectedItems(
+        selectedItems.filter((_, i) => activeCards.indexOf(selectedIndex) !== i)
+      );
+    }
+    sliderRef.current.slickNext();
+  };
+
+  const handleRemoveSpecificCard = (index) => {
+    setActiveCards(activeCards.filter((cardIndex) => cardIndex !== index));
+    setSelectedItems(
+      selectedItems.filter((_, i) => activeCards.indexOf(index) !== i)
+    );
+  };
 
   const settings = {
     dots: false,
@@ -172,16 +206,77 @@ const Cards = () => {
             <Slider ref={sliderRef} {...settings}>
               {items.map((item, index) => {
                 const Icon = item.img;
+                const isActive = activeCards.includes(index);
+                const selectedIndex = activeCards.indexOf(index) + 1;
+                const totalSelected = 3;
 
                 return (
-                  <motion.div key={index} className={style.cards__item}>
-                    <div className={style.cards__item__container}>
-                      <motion.div className={style.cards__item__img}>
+                  <motion.div
+                    key={index}
+                    className={`${style.cards__item} ${
+                      isActive ? style.active : ""
+                    }`}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    // whileHover={!isActive ? { scale: 1.03 } : {}}
+                    whileTap={!isActive ? { scale: 0.97 } : {}}
+                  >
+                    <motion.div
+                      className={style.cards__item__container}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {isActive && (
+                        <motion.div
+                          className={style.cards__item__top}
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          <motion.div
+                            className={style.card__number}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 500 }}
+                          >
+                            <p>
+                              {selectedIndex}/{totalSelected}
+                            </p>
+                          </motion.div>
+
+                          <motion.button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveSpecificCard(index);
+                            }}
+                            whileHover={{ scale: 1.2, rotate: 90 }}
+                            whileTap={{ scale: 0.9 }}
+                            transition={{ type: "spring", stiffness: 400 }}
+                          >
+                            <Close />
+                          </motion.button>
+                        </motion.div>
+                      )}
+
+                      <motion.div
+                        className={style.cards__item__img}
+                        animate={
+                          isActive
+                            ? {
+                                scale: 1.1,
+                              }
+                            : { scale: 1 }
+                        }
+                        transition={{ duration: 0.3 }}
+                      >
                         <Icon />
                       </motion.div>
-                      <h4>{item.title}</h4>
-                      <p>{item.text}</p>
-                    </div>
+
+                      <motion.div className={style.cards__item__text}>
+                        <h4>{item.title}</h4>
+                        <p>{item.text}</p>
+                      </motion.div>
+                    </motion.div>
                   </motion.div>
                 );
               })}
@@ -190,16 +285,21 @@ const Cards = () => {
 
           <motion.div className={style.cards__panel} variants={itemVariants}>
             <motion.button
-              onClick={() => sliderRef.current.slickNext()}
+              onClick={handleRemoveCard}
               whileHover={buttonHover}
               whileTap={buttonTap}
             >
               <X />
             </motion.button>
 
-            <p>Dipilih: 0/3</p>
+            <p>Dipilih: {selectedItems.length}/3</p>
 
-            <motion.button whileHover={buttonHover} whileTap={buttonTap}>
+            <motion.button
+              onClick={handleAddCard}
+              whileHover={buttonHover}
+              whileTap={buttonTap}
+              disabled={selectedItems.length >= 3}
+            >
               <Check />
             </motion.button>
           </motion.div>

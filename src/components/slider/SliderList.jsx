@@ -155,7 +155,7 @@ const SliderList = () => {
                   initial="hidden"
                   animate={isInView ? "visible" : "hidden"}
                   variants={slideItemVariants}
-                  whileHover="hover"
+                  whileTap={{ scale: 0.97 }}
                 >
                   <div className={style.slider__content}>
                     <motion.p
