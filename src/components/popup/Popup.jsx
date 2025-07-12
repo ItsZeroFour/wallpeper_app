@@ -10,6 +10,10 @@ import wallpaper from "../../assets/images/wallpaper.png";
 const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2 },
+  },
 };
 
 const popupVariants = {
@@ -30,12 +34,22 @@ const popupVariants = {
   },
   exit: {
     opacity: 0,
-    y: 50,
-    transition: { duration: 0.2 },
+    y: 20,
+    scale: 0.98,
+    transition: {
+      duration: 0.15,
+      ease: "easeIn",
+    },
   },
 };
 
-const Popup = ({ onClose, selectedItems }) => {
+const contentVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 },
+};
+
+const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
   const wrapperRef = useRef();
   const canvasRef = useRef(null);
 
@@ -115,71 +129,80 @@ const Popup = ({ onClose, selectedItems }) => {
 
   return (
     <AnimatePresence>
-      <motion.div
-        className={style.popup}
-        onClick={onClose}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        variants={backdropVariants}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="container">
-          <motion.div
-            className={style.popup__wrapper}
-            ref={wrapperRef}
-            onClick={handleWrapperClick}
-            variants={popupVariants}
-          >
-            <div className={style.popup__content}>
-              <div className={style.popup__left}>
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Kartu Harapan Sudah Siap!
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  Kamu sudah pilih 3 gambar yang cocok sama nilai-nilai kamu.
-                  Download kartu harapan ini ke smartphone kamu
-                </motion.p>
+      {isOpen && (
+        <motion.div
+          className={style.popup}
+          onClick={onClose}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={backdropVariants}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="container">
+            <motion.div
+              className={style.popup__wrapper}
+              ref={wrapperRef}
+              onClick={handleWrapperClick}
+              variants={popupVariants}
+            >
+              <div className={style.popup__content}>
+                <div className={style.popup__left}>
+                  <motion.h2
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={contentVariants}
+                    transition={{ delay: 0.2 }}
+                  >
+                    Kartu Harapan Sudah Siap!
+                  </motion.h2>
+                  <motion.p
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={contentVariants}
+                    transition={{ delay: 0.3 }}
+                  >
+                    Kamu sudah pilih 3 gambar yang cocok sama nilai-nilai kamu.
+                    Download kartu harapan ini ke smartphone kamu
+                  </motion.p>
 
-                <motion.div
-                  className={style.popup__button}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <canvas ref={canvasRef} style={{ display: "none" }} />
-                  <Link to="/">Lakukan deposit sekarang</Link>
+                  <motion.div
+                    className={style.popup__button}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={contentVariants}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <canvas ref={canvasRef} style={{ display: "none" }} />
+                    <Link to="/">Lakukan deposit sekarang</Link>
 
-                  {imageLoaded && (
+                    {/* {imageLoaded && ( */}
                     <button onClick={handleDownload}>
                       Download Kartu Harapan <ArrowBottom />
                     </button>
-                  )}
+                    {/* )} */}
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  className={style.popup__right}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: 0.3, type: "spring" }}
+                >
+                  <img src={popupPhone} loading="lazy" alt="wallpaper" />
                 </motion.div>
               </div>
-
-              <motion.div
-                className={style.popup__right}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, type: "spring" }}
-              >
-                <img src={popupPhone} alt="wallpaper" />
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
-};
+});
 
 export default Popup;

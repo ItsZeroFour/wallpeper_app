@@ -172,7 +172,7 @@ const SliderList = () => {
                       animate={{ scale: 1 }}
                       transition={{ delay: index * 0.15 + 0.2, duration: 0.5 }}
                     >
-                      <img src={slide.img} alt={slide.title} />
+                      <img src={slide.img} loading="lazy" alt={slide.title} />
                     </motion.div>
 
                     <motion.div

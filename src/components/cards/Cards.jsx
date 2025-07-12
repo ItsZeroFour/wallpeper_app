@@ -319,11 +319,19 @@ const Cards = () => {
         </motion.div>
       </div>
 
-      {isPopupOpen && (
-        <div onClick={() => setIsPopupOpen(false)}>
-          <Popup onClose={() => setIsPopupOpen(false)} selectedItems={selectedItems} />
-        </div>
-      )}
+      <motion.div
+        onClick={() => setIsPopupOpen(false)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Popup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          selectedItems={selectedItems}
+        />
+      </motion.div>
     </motion.section>
   );
 };

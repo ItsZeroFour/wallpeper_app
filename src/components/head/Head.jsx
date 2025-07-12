@@ -55,7 +55,7 @@ const Head = () => {
           </motion.div>
 
           <motion.div className={style.head__right} variants={imageAnim}>
-            <img src={person} alt="person" />
+            <img src={person} loading="lazy" alt="person" />
           </motion.div>
         </motion.div>
       </div>
