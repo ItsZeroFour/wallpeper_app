@@ -25,7 +25,7 @@ const SliderList = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const marginValue = windowWidth <= 900 ? "-200px" : "-400px";
+  const marginValue = windowWidth <= 900 ? "-50px" : "-400px";
 
   const isInView = useInView(sectionRef, {
     once: true,
