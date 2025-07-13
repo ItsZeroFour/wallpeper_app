@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import popupPhone from "../../assets/images/popup_phone.png";
 import { motion, AnimatePresence } from "framer-motion";
 import wallpaper from "../../assets/images/wallpaper.png";
+import Close from "../../assets/icons/close.svg?react";
 
 /* ANIMATIONS */
 const backdropVariants = {
@@ -175,6 +176,11 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
               onClick={handleWrapperClick}
               variants={popupVariants}
             >
+              <div className={style.popup__close}>
+                <button onClick={onClose}>
+                  <Close />
+                </button>
+              </div>
               <div className={style.popup__content}>
                 <div className={style.popup__left}>
                   <motion.h2

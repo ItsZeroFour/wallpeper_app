@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import style from "./slider.module.scss";
 import ArrowLeft from "../../assets/icons/arrow-left.svg?react";
 import ArrowRight from "../../assets/icons/arrow-right.svg?react";
@@ -14,7 +14,23 @@ import { motion, useInView } from "framer-motion";
 const SliderList = () => {
   const sliderRef = useRef();
   const sectionRef = useRef();
-  const isInView = useInView(sectionRef, { once: true, margin: "-450px" });
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const marginValue = windowWidth <= 900 ? "-200px" : "-400px";
+
+  const isInView = useInView(sectionRef, {
+    once: true,
+    margin: marginValue,
+  });
 
   const settings = {
     dots: false,

@@ -2,8 +2,8 @@ import React from "react";
 import style from "./footer.module.scss";
 import Logo from "../../assets/logo-2.svg?react";
 import { Link } from "react-router-dom";
-import Telegram from "../../assets/icons/telegram.svg?react";
-import Instagram from "../../assets/icons/instagram.svg?react";
+import telegram from "../../assets/icons/telegram.png";
+import instagram from "../../assets/icons/instagram.png";
 
 const Footer = () => {
   return (
@@ -14,6 +14,20 @@ const Footer = () => {
             <Link to="/">
               <Logo />
             </Link>
+
+            <ul>
+              <li>
+                <Link to="/">
+                  <img src={telegram} alt="telegram" />
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/">
+                  <img src={instagram} alt="instagram" />
+                </Link>
+              </li>
+            </ul>
 
             <Link to="/">Privacy Policy</Link>
           </div>
@@ -50,16 +64,18 @@ const Footer = () => {
             <ul>
               <li>
                 <Link to="/">
-                  <Telegram />
+                  <img src={telegram} alt="telegram" />
                 </Link>
               </li>
 
               <li>
                 <Link to="/">
-                  <Instagram />
+                  <img src={instagram} alt="instagram" />
                 </Link>
               </li>
             </ul>
+
+            <Link to="/">Privacy Policy</Link>
 
             <p>© {new Date().getFullYear()}</p>
           </div>

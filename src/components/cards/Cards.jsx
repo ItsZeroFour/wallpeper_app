@@ -122,18 +122,42 @@ const items = [
 ];
 
 const Cards = () => {
-  const ref = useRef(null);
   const sliderRef = useRef();
-  const isInView = useInView(ref, { once: true, margin: "-400px" });
+  const ref = useRef(null);
 
   const [activeCards, setActiveCards] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
+
+  const isInView = useInView(ref, {
+    once: true,
+    margin: marginValue,
+  });
 
   const handleAddCard = useCallback(() => {
     const currentSlideIndex =
       sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-    const selectedIndex = (currentSlideIndex + 2) % items.length;
+
+    let selectedIndex;
+    if (windowWidth <= 660) {
+      selectedIndex = currentSlideIndex % items.length; // Выбираем первый элемент (0) при ширине ≤660px
+    } else if (windowWidth <= 1024) {
+      selectedIndex = (currentSlideIndex + 1) % items.length; // Выбираем второй элемент (1) при ширине ≤1024px
+    } else {
+      selectedIndex = (currentSlideIndex + 2) % items.length; // Выбираем третий элемент (2) по умолчанию
+    }
 
     setActiveCards((prev) => {
       if (!prev.includes(selectedIndex) && selectedItems.length < 3) {
@@ -150,12 +174,20 @@ const Cards = () => {
     });
 
     sliderRef.current?.slickNext?.();
-  }, [activeCards, selectedItems.length]);
+  }, [activeCards, selectedItems.length, windowWidth]);
 
   const handleRemoveCard = useCallback(() => {
     const currentSlideIndex =
       sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-    const selectedIndex = (currentSlideIndex + 2) % items.length;
+
+    let selectedIndex;
+    if (windowWidth <= 660) {
+      selectedIndex = currentSlideIndex % items.length;
+    } else if (windowWidth <= 1024) {
+      selectedIndex = (currentSlideIndex + 1) % items.length;
+    } else {
+      selectedIndex = (currentSlideIndex + 2) % items.length;
+    }
 
     setActiveCards((prev) => prev.filter((index) => index !== selectedIndex));
     setSelectedItems((prev) =>
@@ -163,7 +195,7 @@ const Cards = () => {
     );
 
     sliderRef.current?.slickNext?.();
-  }, [activeCards]);
+  }, [activeCards, windowWidth]);
 
   const handleRemoveSpecificCard = useCallback(
     (index) => {
@@ -197,8 +229,8 @@ const Cards = () => {
           settings: { slidesToShow: 3 },
         },
         {
-          breakpoint: 600,
-          settings: { slidesToShow: 2 },
+          breakpoint: 660,
+          settings: { slidesToShow: 1 },
         },
       ],
     }),
@@ -290,11 +322,7 @@ const Cards = () => {
             transition={{ type: "spring", stiffness: 300 }}
           />
 
-          <motion.div
-            className={style.cards__list}
-            style={{ width: "80%", margin: "0 auto" }}
-            variants={itemVariants}
-          >
+          <motion.div className={style.cards__list} variants={itemVariants}>
             <Slider ref={sliderRef} {...settings}>
               {renderCards()}
             </Slider>
