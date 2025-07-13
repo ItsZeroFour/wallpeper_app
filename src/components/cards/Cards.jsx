@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import { motion, useInView } from "framer-motion";
 import style from "./cards.module.scss";
 import iphone from "../../assets/images/cards/iPhone.png";
@@ -62,99 +68,112 @@ const cardVariants = {
   },
 };
 
-const Cards = () => {
-  const items = [
-    {
-      img: Item1,
-      title: "Keberanian",
-      text: "Saya tidak membiarkan rasa takut mengambil keputusan untuk saya",
-    },
-    {
-      img: Item2,
-      title: "Kehormatan",
-      text: "Saya melakukan hal yang benar, bahkan ketika tidak ada yang melihat",
-    },
-    {
-      img: Item3,
-      title: "Keteguhan",
-      text: "Saya tidak menyimpang dari jalan sampai saya mencapai tujuan saya",
-    },
-    {
-      img: Item4,
-      title: "Kesetiaan",
-      text: "Saya selalu menjadi pendukung bagi orang-orang yang",
-    },
-    {
-      img: Item5,
-      title: "Tanggung Jawab",
-      text: "Gue pegang janji gue — itu nunjukin kekuatan hati gue",
-    },
-    {
-      img: Item6,
-      title: "Pengendalian Diri",
-      text: "Gue bisa ngontrol diri — itu kekuatan gue",
-    },
-    {
-      img: Item7,
-      title: "Kesabaran",
-      text: "Perubahan gede butuh waktu dan kesabaran",
-    },
-    {
-      img: Item8,
-      title: "Ketekunan",
-      text: "Gue tetep jalan terus, walau rasanya perjalanan masih jauh",
-    },
-    {
-      img: Item9,
-      title: "Kebaikan Hati",
-      text: "Gue ngelakuin hal baik tanpa ngarepin balasan",
-    },
-    {
-      img: Item10,
-      title: "Pengembangan Diri",
-      text: "Setiap hari gue berusaha jadi lebih baik dari kemarin",
-    },
-  ];
+const items = [
+  {
+    img: Item1,
+    title: "Keberanian",
+    text: "Saya tidak membiarkan rasa takut mengambil keputusan untuk saya",
+  },
+  {
+    img: Item2,
+    title: "Kehormatan",
+    text: "Saya melakukan hal yang benar, bahkan ketika tidak ada yang melihat",
+  },
+  {
+    img: Item3,
+    title: "Keteguhan",
+    text: "Saya tidak menyimpang dari jalan sampai saya mencapai tujuan saya",
+  },
+  {
+    img: Item4,
+    title: "Kesetiaan",
+    text: "Saya selalu menjadi pendukung bagi orang-orang yang",
+  },
+  {
+    img: Item5,
+    title: "Tanggung Jawab",
+    text: "Gue pegang janji gue — itu nunjukin kekuatan hati gue",
+  },
+  {
+    img: Item6,
+    title: "Pengendalian Diri",
+    text: "Gue bisa ngontrol diri — itu kekuatan gue",
+  },
+  {
+    img: Item7,
+    title: "Kesabaran",
+    text: "Perubahan gede butuh waktu dan kesabaran",
+  },
+  {
+    img: Item8,
+    title: "Ketekunan",
+    text: "Gue tetep jalan terus, walau rasanya perjalanan masih jauh",
+  },
+  {
+    img: Item9,
+    title: "Kebaikan Hati",
+    text: "Gue ngelakuin hal baik tanpa ngarepin balasan",
+  },
+  {
+    img: Item10,
+    title: "Pengembangan Diri",
+    text: "Setiap hari gue berusaha jadi lebih baik dari kemarin",
+  },
+];
 
+const Cards = () => {
   const ref = useRef(null);
   const sliderRef = useRef();
-
   const isInView = useInView(ref, { once: true, margin: "-400px" });
 
   const [activeCards, setActiveCards] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleAddCard = () => {
-    const currentSlideIndex = sliderRef.current.innerSlider.state.currentSlide;
+  const handleAddCard = useCallback(() => {
+    const currentSlideIndex =
+      sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
     const selectedIndex = (currentSlideIndex + 2) % items.length;
 
-    if (!activeCards.includes(selectedIndex) && selectedItems.length < 3) {
-      setActiveCards([...activeCards, selectedIndex]);
-      setSelectedItems([...selectedItems, items[selectedIndex].text]);
-    }
-    sliderRef.current.slickNext();
-  };
+    setActiveCards((prev) => {
+      if (!prev.includes(selectedIndex) && selectedItems.length < 3) {
+        return [...prev, selectedIndex];
+      }
+      return prev;
+    });
 
-  const handleRemoveCard = () => {
-    const currentSlideIndex = sliderRef.current.innerSlider.state.currentSlide;
+    setSelectedItems((prev) => {
+      if (!activeCards.includes(selectedIndex) && prev.length < 3) {
+        return [...prev, items[selectedIndex].text];
+      }
+      return prev;
+    });
+
+    sliderRef.current?.slickNext?.();
+  }, [activeCards, selectedItems.length]);
+
+  const handleRemoveCard = useCallback(() => {
+    const currentSlideIndex =
+      sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
     const selectedIndex = (currentSlideIndex + 2) % items.length;
 
-    if (activeCards.includes(selectedIndex)) {
-      setActiveCards(activeCards.filter((index) => index !== selectedIndex));
-      setSelectedItems(
-        selectedItems.filter((_, i) => activeCards.indexOf(selectedIndex) !== i)
-      );
-    }
-    sliderRef.current.slickNext();
-  };
-
-  const handleRemoveSpecificCard = (index) => {
-    setActiveCards(activeCards.filter((cardIndex) => cardIndex !== index));
-    setSelectedItems(
-      selectedItems.filter((_, i) => activeCards.indexOf(index) !== i)
+    setActiveCards((prev) => prev.filter((index) => index !== selectedIndex));
+    setSelectedItems((prev) =>
+      prev.filter((_, i) => activeCards.indexOf(selectedIndex) !== i)
     );
-  };
+
+    sliderRef.current?.slickNext?.();
+  }, [activeCards]);
+
+  const handleRemoveSpecificCard = useCallback(
+    (index) => {
+      setActiveCards((prev) => prev.filter((cardIndex) => cardIndex !== index));
+      setSelectedItems((prev) =>
+        prev.filter((_, i) => activeCards.indexOf(index) !== i)
+      );
+    },
+    [activeCards]
+  );
 
   useEffect(() => {
     if (selectedItems.length === 3) {
@@ -165,27 +184,87 @@ const Cards = () => {
     }
   }, [selectedItems]);
 
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
+  const settings = useMemo(
+    () => ({
+      dots: false,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: { slidesToShow: 3 },
         },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
+        {
+          breakpoint: 600,
+          settings: { slidesToShow: 2 },
         },
-      },
-    ],
-  };
+      ],
+    }),
+    []
+  );
+
+  const renderCards = useCallback(() => {
+    return items.map((item, index) => {
+      const Icon = item.img;
+      const isActive = activeCards.includes(index);
+      const selectedIndex = activeCards.indexOf(index) + 1;
+
+      return (
+        <motion.div
+          key={`card-${index}`}
+          className={`${style.cards__item} ${isActive ? style.active : ""}`}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          whileTap={!isActive ? { scale: 0.97 } : {}}
+        >
+          <div className={style.cards__item__container}>
+            {isActive && (
+              <motion.div
+                className={style.cards__item__top}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <motion.div
+                  className={style.card__number}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500 }}
+                >
+                  <p>{selectedIndex}/3</p>
+                </motion.div>
+                <motion.button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveSpecificCard(index);
+                  }}
+                  whileHover={{ scale: 1.2, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <Close />
+                </motion.button>
+              </motion.div>
+            )}
+            <motion.div
+              className={style.cards__item__img}
+              animate={isActive ? { scale: 1.1 } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Icon />
+            </motion.div>
+            <div className={style.cards__item__text}>
+              <h4>{item.title}</h4>
+              <p>{item.text}</p>
+            </div>
+          </div>
+        </motion.div>
+      );
+    });
+  }, [activeCards, handleRemoveSpecificCard]);
 
   return (
     <motion.section className={style.cards} ref={ref}>
@@ -217,82 +296,7 @@ const Cards = () => {
             variants={itemVariants}
           >
             <Slider ref={sliderRef} {...settings}>
-              {items.map((item, index) => {
-                const Icon = item.img;
-                const isActive = activeCards.includes(index);
-                const selectedIndex = activeCards.indexOf(index) + 1;
-                const totalSelected = 3;
-
-                return (
-                  <motion.div
-                    key={index}
-                    className={`${style.cards__item} ${
-                      isActive ? style.active : ""
-                    }`}
-                    variants={cardVariants}
-                    initial="hidden"
-                    animate="visible"
-                    // whileHover={!isActive ? { scale: 1.03 } : {}}
-                    whileTap={!isActive ? { scale: 0.97 } : {}}
-                  >
-                    <motion.div
-                      className={style.cards__item__container}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {isActive && (
-                        <motion.div
-                          className={style.cards__item__top}
-                          initial={{ opacity: 0, y: -20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                        >
-                          <motion.div
-                            className={style.card__number}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 500 }}
-                          >
-                            <p>
-                              {selectedIndex}/{totalSelected}
-                            </p>
-                          </motion.div>
-
-                          <motion.button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveSpecificCard(index);
-                            }}
-                            whileHover={{ scale: 1.2, rotate: 90 }}
-                            whileTap={{ scale: 0.9 }}
-                            transition={{ type: "spring", stiffness: 400 }}
-                          >
-                            <Close />
-                          </motion.button>
-                        </motion.div>
-                      )}
-
-                      <motion.div
-                        className={style.cards__item__img}
-                        animate={
-                          isActive
-                            ? {
-                                scale: 1.1,
-                              }
-                            : { scale: 1 }
-                        }
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Icon />
-                      </motion.div>
-
-                      <motion.div className={style.cards__item__text}>
-                        <h4>{item.title}</h4>
-                        <p>{item.text}</p>
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
+              {renderCards()}
             </Slider>
           </motion.div>
 

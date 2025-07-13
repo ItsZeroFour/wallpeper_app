@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "./popup.module.scss";
 import ArrowBottom from "../../assets/icons/arrow-bottom.svg?react";
 import { Link } from "react-router-dom";
@@ -54,12 +54,51 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
   const canvasRef = useRef(null);
 
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [wallpaperLoaded, setWallpaperLoaded] = useState(false);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      try {
+        const img = new Image();
+        img.src = wallpaper;
+        img.onload = () => setWallpaperLoaded(true);
+
+        const phoneImg = new Image();
+        phoneImg.src = popupPhone;
+      } catch (error) {
+        console.error("Error preloading images:", error);
+      }
+    };
+
+    preloadImages();
+  }, []);
 
   const handleWrapperClick = (e) => {
     e.stopPropagation();
   };
 
+  const wrapText = useCallback((ctx, text, maxWidth) => {
+    const words = text.split(" ");
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = ctx.measureText(currentLine + " " + word).width;
+      if (width < maxWidth) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }, []);
+
   useEffect(() => {
+    if (!wallpaperLoaded || !isOpen) return;
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
@@ -79,7 +118,6 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
       ctx.textBaseline = "top";
 
       const lineHeight = 72;
-
       const positions = [
         { x: 980, y: 1120 },
         { x: 140, y: 2030 },
@@ -88,7 +126,6 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
 
       selectedItems.forEach((text, index) => {
         const { x, y } = positions[index];
-
         const lines = wrapText(ctx, text, 520);
         lines.forEach((line, i) => {
           ctx.fillText(line, x, y + i * lineHeight);
@@ -97,35 +134,27 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
 
       setImageLoaded(true);
     };
-  }, []);
 
-  const wrapText = (ctx, text, maxWidth) => {
-    const words = text.split(" ");
-    const lines = [];
-    let currentLine = words[0];
+    image.onerror = () => {
+      console.error("Failed to load wallpaper image");
+    };
+  }, [wallpaperLoaded, isOpen, selectedItems, wrapText]);
 
-    for (let i = 1; i < words.length; i++) {
-      const word = words[i];
-      const width = ctx.measureText(currentLine + " " + word).width;
-      if (width < maxWidth) {
-        currentLine += " " + word;
-      } else {
-        lines.push(currentLine);
-        currentLine = word;
-      }
-    }
-    lines.push(currentLine);
-    return lines;
-  };
-
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const link = document.createElement("a");
-    link.download = "wallapeper.png";
-    link.href = canvas.toDataURL();
-    link.click();
-  };
+
+    try {
+      const link = document.createElement("a");
+      link.download = "wallpaper.png";
+      link.href = canvas.toDataURL("image/png", 1.0);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  }, []);
 
   return (
     <AnimatePresence>
@@ -179,11 +208,13 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
                     <canvas ref={canvasRef} style={{ display: "none" }} />
                     <Link to="/">Lakukan deposit sekarang</Link>
 
-                    {/* {imageLoaded && ( */}
-                    <button onClick={handleDownload}>
-                      Download Kartu Harapan <ArrowBottom />
-                    </button>
-                    {/* )} */}
+                    {imageLoaded ? (
+                      <button onClick={handleDownload}>
+                        Download Kartu Harapan <ArrowBottom />
+                      </button>
+                    ) : (
+                      <button>Mengunduh sedang dimuat...</button>
+                    )}
                   </motion.div>
                 </div>
 
@@ -194,7 +225,7 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: 0.3, type: "spring" }}
                 >
-                  <img src={popupPhone} loading="lazy" alt="wallpaper" />
+                  <img src={popupPhone} loading="eager" alt="wallpaper" />
                 </motion.div>
               </div>
             </motion.div>
