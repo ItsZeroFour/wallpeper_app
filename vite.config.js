@@ -10,7 +10,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/wallpaper_app/",
+  base: "./",
   plugins: [
     react(),
     svgr(),

@@ -183,25 +183,27 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
               </div>
               <div className={style.popup__content}>
                 <div className={style.popup__left}>
-                  <motion.h2
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={contentVariants}
-                    transition={{ delay: 0.2 }}
-                  >
-                    Kartu Harapan Sudah Siap!
-                  </motion.h2>
-                  <motion.p
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={contentVariants}
-                    transition={{ delay: 0.3 }}
-                  >
-                    Kamu sudah pilih 3 gambar yang cocok sama nilai-nilai kamu.
-                    Download kartu harapan ini ke smartphone kamu
-                  </motion.p>
+                  <div className={style.popup__left__text}>
+                    <motion.h2
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={contentVariants}
+                      transition={{ delay: 0.2 }}
+                    >
+                      Kartu Harapan Sudah Siap!
+                    </motion.h2>
+                    <motion.p
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={contentVariants}
+                      transition={{ delay: 0.3 }}
+                    >
+                      Kamu sudah pilih 3 gambar yang cocok sama nilai-nilai
+                      kamu. Download kartu harapan ini ke smartphone kamu
+                    </motion.p>
+                  </div>
 
                   <motion.div
                     className={style.popup__button}
