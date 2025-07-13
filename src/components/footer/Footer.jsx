@@ -1,9 +1,9 @@
 import React from "react";
 import style from "./footer.module.scss";
-import Logo from "../../assets/logo-2.svg?react";
+import Logo from "@assets/logo-2.svg?react";
 import { Link } from "react-router-dom";
-import telegram from "../../assets/icons/telegram.png";
-import instagram from "../../assets/icons/instagram.png";
+import telegram from "@assets/icons/telegram.png";
+import instagram from "@assets/icons/instagram.png";
 
 const Footer = () => {
   return (

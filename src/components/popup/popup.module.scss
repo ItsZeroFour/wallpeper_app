@@ -13,6 +13,8 @@
   top: 0;
   left: 0;
 
+  -webkit-backdrop-filter: blur(5px);
+
   backdrop-filter: blur(5px);
   z-index: 999;
 
@@ -39,6 +41,7 @@
       height: 900px;
 
       background: #929fd3;
+      -webkit-filter: blur(80px);
       filter: blur(80px);
       border-radius: 50%;
       z-index: 1;
@@ -56,6 +59,8 @@
       height: 1500px;
 
       background: var(--color-blue);
+
+      -webkit-filter: blur(220px);
 
       filter: blur(220px);
       border-radius: 50%;

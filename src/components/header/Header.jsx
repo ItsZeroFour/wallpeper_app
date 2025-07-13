@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import style from "./header.module.scss";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.svg";
-import Telegram from "../../assets/icons/telegram.svg?react";
-import Instagram from "../../assets/icons/instagram.svg?react";
+import logo from "@assets/logo.svg";
+import Telegram from "@assets/icons/telegram.svg?react";
+import Instagram from "@assets/icons/instagram.svg?react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const menuVariants = {

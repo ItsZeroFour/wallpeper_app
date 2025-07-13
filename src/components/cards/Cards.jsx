@@ -7,23 +7,23 @@ import React, {
 } from "react";
 import { motion, useInView } from "framer-motion";
 import style from "./cards.module.scss";
-import iphone from "../../assets/images/cards/iPhone.png";
-import Item1 from "../../assets/images/cards/slider/item-1.svg?react";
-import Item2 from "../../assets/images/cards/slider/item-2.svg?react";
-import Item3 from "../../assets/images/cards/slider/item-3.svg?react";
-import Item4 from "../../assets/images/cards/slider/item-4.svg?react";
-import Item5 from "../../assets/images/cards/slider/item-5.svg?react";
-import Item6 from "../../assets/images/cards/slider/item-6.svg?react";
-import Item7 from "../../assets/images/cards/slider/item-7.svg?react";
-import Item8 from "../../assets/images/cards/slider/item-8.svg?react";
-import Item9 from "../../assets/images/cards/slider/item-9.svg?react";
-import Item10 from "../../assets/images/cards/slider/item-10.svg?react";
+import iphone from "@assets/images/cards/iPhone.webp";
+import Item1 from "@assets/images/cards/slider/item-1.svg?react";
+import Item2 from "@assets/images/cards/slider/item-2.svg?react";
+import Item3 from "@assets/images/cards/slider/item-3.svg?react";
+import Item4 from "@assets/images/cards/slider/item-4.svg?react";
+import Item5 from "@assets/images/cards/slider/item-5.svg?react";
+import Item6 from "@assets/images/cards/slider/item-6.svg?react";
+import Item7 from "@assets/images/cards/slider/item-7.svg?react";
+import Item8 from "@assets/images/cards/slider/item-8.svg?react";
+import Item9 from "@assets/images/cards/slider/item-9.svg?react";
+import Item10 from "@assets/images/cards/slider/item-10.svg?react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import X from "../../assets/images/cards/x.svg?react";
-import Check from "../../assets/images/cards/check.svg?react";
-import Close from "../../assets/icons/close.svg?react";
+import X from "@assets/images/cards/x.svg?react";
+import Check from "@assets/images/cards/check.svg?react";
+import Close from "@assets/icons/close.svg?react";
 import Popup from "../popup/Popup";
 
 // Анимации
@@ -131,12 +131,19 @@ const Cards = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
+    let timeoutId;
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setWindowWidth(window.innerWidth);
+      }, 150);
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
@@ -146,62 +153,60 @@ const Cards = () => {
     margin: marginValue,
   });
 
+  const getSelectedIndex = (currentSlideIndex, windowWidth) => {
+    if (windowWidth <= 660) {
+      return currentSlideIndex % items.length;
+    } else if (windowWidth <= 1024) {
+      return (currentSlideIndex + 1) % items.length;
+    } else {
+      return (currentSlideIndex + 2) % items.length;
+    }
+  };
+
   const handleAddCard = useCallback(() => {
     const currentSlideIndex =
       sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-
-    let selectedIndex;
-    if (windowWidth <= 660) {
-      selectedIndex = currentSlideIndex % items.length; // Выбираем первый элемент (0) при ширине ≤660px
-    } else if (windowWidth <= 1024) {
-      selectedIndex = (currentSlideIndex + 1) % items.length; // Выбираем второй элемент (1) при ширине ≤1024px
-    } else {
-      selectedIndex = (currentSlideIndex + 2) % items.length; // Выбираем третий элемент (2) по умолчанию
-    }
+    const selectedIndex = getSelectedIndex(currentSlideIndex, windowWidth);
 
     setActiveCards((prev) => {
-      if (!prev.includes(selectedIndex) && selectedItems.length < 3) {
+      if (!prev.includes(selectedIndex) && prev.length < 3) {
         return [...prev, selectedIndex];
       }
       return prev;
     });
 
     setSelectedItems((prev) => {
-      if (!activeCards.includes(selectedIndex) && prev.length < 3) {
+      if (
+        !prev.some((text) => text === items[selectedIndex].text) &&
+        prev.length < 3
+      ) {
         return [...prev, items[selectedIndex].text];
       }
       return prev;
     });
 
     sliderRef.current?.slickNext?.();
-  }, [activeCards, selectedItems.length, windowWidth]);
+  }, [windowWidth]);
 
   const handleRemoveCard = useCallback(() => {
     const currentSlideIndex =
       sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-
-    let selectedIndex;
-    if (windowWidth <= 660) {
-      selectedIndex = currentSlideIndex % items.length;
-    } else if (windowWidth <= 1024) {
-      selectedIndex = (currentSlideIndex + 1) % items.length;
-    } else {
-      selectedIndex = (currentSlideIndex + 2) % items.length;
-    }
+    const selectedIndex = getSelectedIndex(currentSlideIndex, windowWidth);
 
     setActiveCards((prev) => prev.filter((index) => index !== selectedIndex));
+
     setSelectedItems((prev) =>
-      prev.filter((_, i) => activeCards.indexOf(selectedIndex) !== i)
+      prev.filter((text) => text !== items[selectedIndex].text)
     );
 
     sliderRef.current?.slickNext?.();
-  }, [activeCards, windowWidth]);
+  }, [windowWidth]);
 
   const handleRemoveSpecificCard = useCallback(
     (index) => {
       setActiveCards((prev) => prev.filter((cardIndex) => cardIndex !== index));
       setSelectedItems((prev) =>
-        prev.filter((_, i) => activeCards.indexOf(index) !== i)
+        prev.filter((text) => text !== items[index].text)
       );
     },
     [activeCards]

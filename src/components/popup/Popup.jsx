@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import style from "./popup.module.scss";
 import ArrowBottom from "../../assets/icons/arrow-bottom.svg?react";
 import { Link } from "react-router-dom";
-import popupPhone from "../../assets/images/popup_phone.png";
+import popupPhone from "../../assets/images/popup_phone.webp";
 import { motion, AnimatePresence } from "framer-motion";
 import wallpaper from "../../assets/images/wallpaper.png";
 import Close from "../../assets/icons/close.svg?react";

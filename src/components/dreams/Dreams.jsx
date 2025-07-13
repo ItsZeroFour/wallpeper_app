@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import style from "./dreams.module.scss";
-import Item1 from "../../assets/images/dreams/item-1.svg?react";
-import Item2 from "../../assets/images/dreams/item-2.svg?react";
-import Item3 from "../../assets/images/dreams/item-3.svg?react";
-import Item4 from "../../assets/images/dreams/item-4.svg?react";
-import Item5 from "../../assets/images/dreams/item-5.svg?react";
-import Item6 from "../../assets/images/dreams/item-6.svg?react";
-import Item7 from "../../assets/images/dreams/item-7.svg?react";
-import Item8 from "../../assets/images/dreams/item-8.svg?react";
+import Item1 from "@assets/images/dreams/item-1.svg?react";
+import Item2 from "@assets/images/dreams/item-2.svg?react";
+import Item3 from "@assets/images/dreams/item-3.svg?react";
+import Item4 from "@assets/images/dreams/item-4.svg?react";
+import Item5 from "@assets/images/dreams/item-5.svg?react";
+import Item6 from "@assets/images/dreams/item-6.svg?react";
+import Item7 from "@assets/images/dreams/item-7.svg?react";
+import Item8 from "@assets/images/dreams/item-8.svg?react";
 
 import { motion, useInView } from "framer-motion";
 

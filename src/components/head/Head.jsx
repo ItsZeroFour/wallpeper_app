@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./head.module.scss";
 import { Link } from "react-router-dom";
-import person from "../../assets/images/head/person.png";
+import person from "@assets/images/head/person.webp";
 import { motion } from "framer-motion";
 
 const Head = () => {
@@ -55,7 +55,7 @@ const Head = () => {
           </motion.div>
 
           <motion.div className={style.head__right} variants={imageAnim}>
-            <img src={person} loading="lazy" alt="person" />
+            <img src={person} alt="person" />
           </motion.div>
         </motion.div>
       </div>

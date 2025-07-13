@@ -21,7 +21,8 @@
     height: 900px;
 
     background: #929fd3;
-    filter: blur(80px);
+    -webkit-filter: blur(80px);
+            filter: blur(80px);
     border-radius: 50%;
 
     @media (max-width: 1220px) {
@@ -42,7 +43,9 @@
 
     background: var(--color-blue);
 
-    filter: blur(120px);
+    -webkit-filter: blur(120px);
+
+            filter: blur(120px);
     border-radius: 50%;
 
     @media (max-width: 1220px) {

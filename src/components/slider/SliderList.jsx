@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import style from "./slider.module.scss";
-import ArrowLeft from "../../assets/icons/arrow-left.svg?react";
-import ArrowRight from "../../assets/icons/arrow-right.svg?react";
+import ArrowLeft from "@assets/icons/arrow-left.svg?react";
+import ArrowRight from "@assets/icons/arrow-right.svg?react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import img1 from "../../assets/images/slider/image-1.png";
-import img2 from "../../assets/images/slider/image-2.png";
-import img3 from "../../assets/images/slider/image-3.png";
-import img4 from "../../assets/images/slider/image-4.png";
+import img1 from "@assets/images/slider/image-1.webp";
+import img2 from "@assets/images/slider/image-2.webp";
+import img3 from "@assets/images/slider/image-3.webp";
+import img4 from "@assets/images/slider/image-4.webp";
 import { motion, useInView } from "framer-motion";
 
 const SliderList = () => {

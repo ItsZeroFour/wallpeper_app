@@ -1,12 +1,12 @@
 import React from "react";
 
-const Banner = React.lazy(() => import("./components/banner/Banner"));
-const Cards = React.lazy(() => import("./components/cards/Cards"));
-const Dreams = React.lazy(() => import("./components/dreams/Dreams"));
-const Footer = React.lazy(() => import("./components/footer/Footer"));
-const Head = React.lazy(() => import("./components/head/Head"));
-const Header = React.lazy(() => import("./components/header/Header"));
-const SliderList = React.lazy(() => import("./components/slider/SliderList"));
+const Banner = React.lazy(() => import("@components/banner/Banner"));
+const Cards = React.lazy(() => import("@components/cards/Cards"));
+const Dreams = React.lazy(() => import("@components/dreams/Dreams"));
+const Footer = React.lazy(() => import("@components/footer/Footer"));
+const Head = React.lazy(() => import("@components/head/Head"));
+const Header = React.lazy(() => import("@components/header/Header"));
+const SliderList = React.lazy(() => import("@components/slider/SliderList"));
 
 function App() {
   return (
