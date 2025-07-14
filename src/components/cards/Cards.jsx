@@ -297,7 +297,7 @@ const Cards = () => {
           whileTap={!isActive ? { scale: 0.97 } : {}}
         >
           <div className={style.cards__item__container}>
-            {isActive && (
+            {/* {isActive && (
               <motion.div className={style.cards__item__top}>
                 <motion.div className={style.card__number}>
                   <p>{selectedIndex}/3</p>
@@ -313,7 +313,7 @@ const Cards = () => {
                   <Close />
                 </motion.button>
               </motion.div>
-            )}
+            )} */}
             <motion.div className={style.cards__item__img}>
               <Icon />
             </motion.div>
