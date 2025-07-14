@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./head.module.scss";
 import { Link } from "react-router-dom";
-import person from "@assets/images/head/person.webp";
+import person from "@assets/images/head/person.png";
 import { motion } from "framer-motion";
 
 const Head = () => {
@@ -31,9 +31,9 @@ const Head = () => {
       <div className="container">
         <motion.div
           className={style.head__wrapper}
-          initial="hidden"
-          animate="show"
-          variants={container}
+          // initial="hidden"
+          // animate="show"
+          // variants={container}
         >
           <motion.div className={style.head__left} variants={container}>
             <motion.h1 variants={item}>

@@ -163,9 +163,9 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
         <motion.div
           className={style.popup}
           onClick={onClose}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
+          // initial="hidden"
+          // animate="visible"
+          // exit="exit"
           variants={backdropVariants}
           transition={{ duration: 0.3 }}
         >
@@ -185,18 +185,18 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
                 <div className={style.popup__left}>
                   <div className={style.popup__left__text}>
                     <motion.h2
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
+                      // initial="hidden"
+                      // animate="visible"
+                      // exit="exit"
                       variants={contentVariants}
                       transition={{ delay: 0.2 }}
                     >
                       Kartu Harapan Sudah Siap!
                     </motion.h2>
                     <motion.p
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
+                      // initial="hidden"
+                      // animate="visible"
+                      // exit="exit"
                       variants={contentVariants}
                       transition={{ delay: 0.3 }}
                     >
@@ -207,9 +207,9 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
 
                   <motion.div
                     className={style.popup__button}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
+                    // initial="hidden"
+                    // animate="visible"
+                    // exit="exit"
                     variants={contentVariants}
                     transition={{ delay: 0.4 }}
                   >
@@ -228,10 +228,10 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
 
                 <motion.div
                   className={style.popup__right}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: 0.3, type: "spring" }}
+                  // initial={{ opacity: 0, scale: 0.9 }}
+                  // animate={{ opacity: 1, scale: 1 }}
+                  // exit={{ opacity: 0, scale: 0.95 }}
+                  // transition={{ delay: 0.3, type: "spring" }}
                 >
                   <img src={popupPhone} loading="eager" alt="wallpaper" />
                 </motion.div>

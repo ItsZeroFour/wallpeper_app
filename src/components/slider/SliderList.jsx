@@ -42,7 +42,7 @@ const SliderList = () => {
     arrows: false,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1200,
         settings: {
           slidesToShow: 2.5,
           centerPadding: "30px",
@@ -168,9 +168,9 @@ const SliderList = () => {
                   key={slide.id}
                   className={style.slider__item}
                   custom={index}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  variants={slideItemVariants}
+                  // initial="hidden"
+                  // animate={isInView ? "visible" : "hidden"}
+                  // variants={slideItemVariants}
                   whileTap={{ scale: 0.97 }}
                 >
                   <div className={style.slider__content}>

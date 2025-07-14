@@ -131,9 +131,9 @@ const Dreams = () => {
         <div className={style.dreams__wrapper}>
           <motion.div
             className={style.dreams__top}
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            // initial={{ opacity: 0, y: 30 }}
+            // animate={isInView ? { opacity: 1, y: 0 } : {}}
+            // transition={{ duration: 0.6 }}
           >
             <h2>Yuk, pilih mimpi kamu!</h2>
             <p>Lihat berapa banyak yang punya mimpi serupa</p>
@@ -153,9 +153,9 @@ const Dreams = () => {
                   onClick={() => handleItemClick(title)}
                   whileHover={!isSelected ? { scale: 1.05 } : {}}
                   whileTap={!isSelected ? { scale: 0.95 } : {}}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
+                  // variants={itemVariants}
+                  // initial="hidden"
+                  // animate={isInView ? "visible" : "hidden"}
                   custom={index}
                 >
                   <motion.div
@@ -224,9 +224,9 @@ const Dreams = () => {
                     onClick={() => handleItemClick(title)}
                     whileHover={!isSelected ? { scale: 1.05 } : {}}
                     whileTap={!isSelected ? { scale: 0.95 } : {}}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
+                    // variants={itemVariants}
+                    // initial="hidden"
+                    // animate={isInView ? "visible" : "hidden"}
                     custom={adjustedIndex}
                   >
                     <motion.div

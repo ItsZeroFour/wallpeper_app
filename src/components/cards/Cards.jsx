@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { motion, useInView } from "framer-motion";
 import style from "./cards.module.scss";
-import iphone from "@assets/images/cards/iPhone.webp";
+import iphone from "@assets/images/cards/iPhone.png";
 import Item1 from "@assets/images/cards/slider/item-1.svg?react";
 import Item2 from "@assets/images/cards/slider/item-2.svg?react";
 import Item3 from "@assets/images/cards/slider/item-3.svg?react";
@@ -124,6 +124,7 @@ const items = [
 const Cards = () => {
   const sliderRef = useRef();
   const ref = useRef(null);
+  const isDragging = useRef(false);
 
   const [activeCards, setActiveCards] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -146,21 +147,33 @@ const Cards = () => {
     };
   }, []);
 
-  const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
+  useEffect(() => {
+    const handleMouseDown = () => {
+      isDragging.current = false;
+    };
 
-  const isInView = useInView(ref, {
-    once: true,
-    margin: marginValue,
-  });
+    const handleMouseMove = () => {
+      isDragging.current = true;
+    };
 
-  const getSelectedIndex = (currentSlideIndex, windowWidth) => {
-    if (windowWidth <= 660) {
-      return currentSlideIndex % items.length;
-    } else if (windowWidth <= 1024) {
-      return (currentSlideIndex + 1) % items.length;
-    } else {
-      return (currentSlideIndex + 2) % items.length;
-    }
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  // const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
+
+  // const isInView = useInView(ref, {
+  //   once: true,
+  //   margin: marginValue,
+  // });
+
+  const getSelectedIndex = (currentSlideIndex) => {
+    return currentSlideIndex % items.length;
   };
 
   const handleAddCard = useCallback(() => {
@@ -189,28 +202,36 @@ const Cards = () => {
   }, [windowWidth]);
 
   const handleRemoveCard = useCallback(() => {
-    const currentSlideIndex =
-      sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-    const selectedIndex = getSelectedIndex(currentSlideIndex, windowWidth);
+    setActiveCards((prevActive) => {
+      if (prevActive.length === 0) return prevActive;
 
-    setActiveCards((prev) => prev.filter((index) => index !== selectedIndex));
+      const updatedActive = [...prevActive];
+      const lastRemovedIndex = updatedActive.pop();
 
-    setSelectedItems((prev) =>
-      prev.filter((text) => text !== items[selectedIndex].text)
-    );
+      setSelectedItems((prevSelected) => {
+        const textToRemove = items[lastRemovedIndex].text;
+        return prevSelected.filter((text) => text !== textToRemove);
+      });
 
-    sliderRef.current?.slickNext?.();
-  }, [windowWidth]);
+      return updatedActive;
+    });
+  }, []);
 
-  const handleRemoveSpecificCard = useCallback(
-    (index) => {
-      setActiveCards((prev) => prev.filter((cardIndex) => cardIndex !== index));
-      setSelectedItems((prev) =>
-        prev.filter((text) => text !== items[index].text)
-      );
-    },
-    [activeCards]
-  );
+  const handleRemoveSpecificCard = useCallback(() => {
+    setActiveCards((prevActive) => {
+      if (prevActive.length === 0) return prevActive;
+
+      const updatedActive = [...prevActive];
+      const lastRemovedIndex = updatedActive.pop();
+
+      setSelectedItems((prevSelected) => {
+        const textToRemove = items[lastRemovedIndex].text;
+        return prevSelected.filter((text) => text !== textToRemove);
+      });
+
+      return updatedActive;
+    });
+  }, []);
 
   useEffect(() => {
     if (selectedItems.length === 3) {
@@ -226,16 +247,25 @@ const Cards = () => {
       dots: false,
       infinite: true,
       speed: 500,
+      centerMode: true,
+      centerPadding: "0px",
       slidesToShow: 5,
-      slidesToScroll: 1,
+      slidesToScroll: 5,
+      swipeToSlide: true,
       responsive: [
         {
           breakpoint: 1024,
-          settings: { slidesToShow: 3 },
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+          },
         },
         {
           breakpoint: 660,
-          settings: { slidesToShow: 1 },
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
         },
       ],
     }),
@@ -248,29 +278,28 @@ const Cards = () => {
       const isActive = activeCards.includes(index);
       const selectedIndex = activeCards.indexOf(index) + 1;
 
+      const handleCardClick = () => {
+        if (isDragging.current) return;
+
+        if (!isActive && activeCards.length < 3) {
+          setActiveCards((prev) => [...prev, index]);
+          setSelectedItems((prev) => [...prev, item.text]);
+        }
+
+        sliderRef.current?.slickGoTo(index);
+      };
+
       return (
         <motion.div
           key={`card-${index}`}
           className={`${style.cards__item} ${isActive ? style.active : ""}`}
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
+          onClick={handleCardClick}
           whileTap={!isActive ? { scale: 0.97 } : {}}
         >
           <div className={style.cards__item__container}>
             {isActive && (
-              <motion.div
-                className={style.cards__item__top}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <motion.div
-                  className={style.card__number}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 500 }}
-                >
+              <motion.div className={style.cards__item__top}>
+                <motion.div className={style.card__number}>
                   <p>{selectedIndex}/3</p>
                 </motion.div>
                 <motion.button
@@ -280,17 +309,12 @@ const Cards = () => {
                   }}
                   whileHover={{ scale: 1.2, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400 }}
                 >
                   <Close />
                 </motion.button>
               </motion.div>
             )}
-            <motion.div
-              className={style.cards__item__img}
-              animate={isActive ? { scale: 1.1 } : { scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
+            <motion.div className={style.cards__item__img}>
               <Icon />
             </motion.div>
             <div className={style.cards__item__text}>
@@ -301,16 +325,16 @@ const Cards = () => {
         </motion.div>
       );
     });
-  }, [activeCards, handleRemoveSpecificCard]);
+  }, [activeCards, selectedItems]);
 
   return (
     <motion.section className={style.cards} ref={ref}>
       <div className="container">
         <motion.div
           className={style.cards__wrapper}
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-          initial="hidden"
+          // animate={isInView ? "visible" : "hidden"}
+          // variants={containerVariants}
+          // initial="hidden"
         >
           <motion.h2 variants={itemVariants}>
             Bangun papan keinginanmu
@@ -323,8 +347,8 @@ const Cards = () => {
           <motion.img
             src={iphone}
             alt="iphone"
-            variants={itemVariants}
-            transition={{ type: "spring", stiffness: 300 }}
+            // variants={itemVariants}
+            // transition={{ type: "spring", stiffness: 300 }}
           />
 
           <motion.div className={style.cards__list} variants={itemVariants}>
@@ -336,8 +360,8 @@ const Cards = () => {
           <motion.div className={style.cards__panel} variants={itemVariants}>
             <motion.button
               onClick={handleRemoveCard}
-              whileHover={buttonHover}
-              whileTap={buttonTap}
+              // whileHover={buttonHover}
+              // whileTap={buttonTap}
             >
               <X />
             </motion.button>
@@ -358,10 +382,10 @@ const Cards = () => {
 
       <motion.div
         onClick={() => setIsPopupOpen(false)}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        // initial={{ opacity: 0 }}
+        // animate={{ opacity: 1 }}
+        // exit={{ opacity: 0 }}
+        // transition={{ duration: 0.3 }}
       >
         <Popup
           isOpen={isPopupOpen}
