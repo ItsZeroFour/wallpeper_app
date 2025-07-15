@@ -8,6 +8,8 @@ const Head = React.lazy(() => import("@components/head/Head"));
 const Header = React.lazy(() => import("@components/header/Header"));
 const SliderList = React.lazy(() => import("@components/slider/SliderList"));
 
+// import { checkAuthorization, checkStatus } from "./api/mockAuth";
+
 function App() {
   return (
     <div className="page">
