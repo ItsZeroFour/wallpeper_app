@@ -13,7 +13,14 @@ export default defineConfig({
   base: "./",
   plugins: [
     react(),
-    svgr(),
+    svgr({
+      // exportAsDefault: true,
+      svgrOptions: {
+        icon: false,
+      },
+      include: "**/*.svg?react",
+      exclude: "**/*.svg",
+    }),
     visualizer(),
     VitePWA({ registerType: "autoUpdate" }),
     ViteImageOptimizer({
@@ -25,7 +32,7 @@ export default defineConfig({
         quality: 80,
       },
       png: {
-        quality: [0.6, 0.8],
+        quality: 0.7,
       },
     }),
     viteCompression({ algorithm: "brotliCompress" }),

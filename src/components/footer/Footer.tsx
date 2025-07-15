@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import telegram from "@assets/icons/telegram.png";
 import instagram from "@assets/icons/instagram.png";
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <section className={style.footer}>
       <div className="container">
@@ -18,13 +18,13 @@ const Footer = () => {
             <ul>
               <li>
                 <Link to="/">
-                  <img src={telegram} alt="telegram" />
+                  <img src={telegram as unknown as string} alt="telegram" />
                 </Link>
               </li>
 
               <li>
                 <Link to="/">
-                  <img src={instagram} alt="instagram" />
+                  <img src={instagram as unknown as string} alt="instagram" />
                 </Link>
               </li>
             </ul>
@@ -64,13 +64,13 @@ const Footer = () => {
             <ul>
               <li>
                 <Link to="/">
-                  <img src={telegram} alt="telegram" />
+                  <img src={telegram as unknown as string} alt="telegram" />
                 </Link>
               </li>
 
               <li>
                 <Link to="/">
-                  <img src={instagram} alt="instagram" />
+                  <img src={instagram as unknown as string} alt="instagram" />
                 </Link>
               </li>
             </ul>

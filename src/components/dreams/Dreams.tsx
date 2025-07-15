@@ -10,17 +10,21 @@ import Item7 from "@assets/images/dreams/item-7.svg?react";
 import Item8 from "@assets/images/dreams/item-8.svg?react";
 import { motion } from "framer-motion";
 
-const Dreams = () => {
-  const ref = useRef(null);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [randomPercent, setRandomPercent] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+// interface DreamItem {
+//   img: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+//   title: string;
+// }
+
+const Dreams: React.FC = () => {
+  const ref = useRef<HTMLOptionElement>(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [randomPercent, setRandomPercent] = useState<number | null>(null);
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -47,8 +51,10 @@ const Dreams = () => {
       if (list2.length > 0 && list1.length === originalList1.length) {
         const newList2 = [...list2];
         const movedItem = newList2.pop();
-        setList2(newList2);
-        setList1([...list1, movedItem]);
+        if (movedItem) {
+          setList2(newList2);
+          setList1([...list1, movedItem]);
+        }
       }
     } else {
       if (list1.length !== originalList1.length) {
@@ -58,7 +64,7 @@ const Dreams = () => {
     }
   }, [windowWidth, list1, list2, originalList1, originalList2]);
 
-  const handleItemClick = (title) => {
+  const handleItemClick = (title: string) => {
     if (selectedItem === title) {
       setSelectedItem(null);
       setRandomPercent(null);
@@ -79,8 +85,7 @@ const Dreams = () => {
           </div>
 
           <ul className={style.dreams__list}>
-            {list1.map(({ img, title }) => {
-              const Icon = img;
+            {list1.map(({ img: Icon, title }) => {
               const isSelected = selectedItem === title;
 
               return (
@@ -120,7 +125,7 @@ const Dreams = () => {
                             delay: 0.3,
                           }}
                         >
-                          <p>73%</p>
+                          <p>{randomPercent ?? 73}%</p>
                           <p className={style.card__title}>Ingin yang sama</p>
                         </motion.div>
                       </div>
@@ -133,8 +138,7 @@ const Dreams = () => {
 
           {list2.length > 0 && (
             <ul className={style.dreams__list}>
-              {list2.map(({ img, title }) => {
-                const Icon = img;
+              {list2.map(({ img: Icon, title }) => {
                 const isSelected = selectedItem === title;
 
                 return (
@@ -172,7 +176,7 @@ const Dreams = () => {
                               delay: 0.3,
                             }}
                           >
-                            <p>73%</p>
+                            <p>{randomPercent ?? 73}%</p>
                             <p className={style.card__title}>Ingin yang sama</p>
                           </motion.div>
                         </div>
