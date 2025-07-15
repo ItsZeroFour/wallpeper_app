@@ -27,29 +27,6 @@ import Close from "@assets/icons/close.svg?react";
 import Popup from "../popup/Popup";
 
 // Анимации
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  },
-};
-
 const buttonHover = {
   scale: 1.1,
   transition: { type: "spring", stiffness: 400 },
@@ -59,65 +36,96 @@ const buttonTap = {
   scale: 0.95,
 };
 
-const cardVariants = {
-  hidden: { scale: 0.95, opacity: 0.8 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    transition: { duration: 0.3 },
-  },
-};
-
 const items = [
   {
     img: Item1,
     title: "Keberanian",
     text: "Saya tidak membiarkan rasa takut mengambil keputusan untuk saya",
+    translation: {
+      title: "Courage",
+      text: "I do not let fear make decisions for me",
+    },
   },
   {
     img: Item2,
     title: "Kehormatan",
     text: "Saya melakukan hal yang benar, bahkan ketika tidak ada yang melihat",
+    translation: {
+      title: "Honor",
+      text: "I do the right thing, even when no one is watching",
+    },
   },
   {
     img: Item3,
     title: "Keteguhan",
     text: "Saya tidak menyimpang dari jalan sampai saya mencapai tujuan saya",
+    translation: {
+      title: "Determination",
+      text: "I do not stray from the path until I reach my goal",
+    },
   },
   {
     img: Item4,
     title: "Kesetiaan",
     text: "Saya selalu menjadi pendukung bagi orang-orang yang",
+    translation: {
+      title: "Loyalty",
+      text: "I am always a supporter of those I care about",
+    },
   },
   {
     img: Item5,
     title: "Tanggung Jawab",
     text: "Gue pegang janji gue — itu nunjukin kekuatan hati gue",
+    translation: {
+      title: "Responsibility",
+      text: "I keep my promises — that shows the strength of my heart",
+    },
   },
   {
     img: Item6,
     title: "Pengendalian Diri",
     text: "Gue bisa ngontrol diri — itu kekuatan gue",
+    translation: {
+      title: "Self-Control",
+      text: "I can control myself — that is my strength",
+    },
   },
   {
     img: Item7,
     title: "Kesabaran",
     text: "Perubahan gede butuh waktu dan kesabaran",
+    translation: {
+      title: "Patience",
+      text: "Big changes require time and patience",
+    },
   },
   {
     img: Item8,
     title: "Ketekunan",
     text: "Gue tetep jalan terus, walau rasanya perjalanan masih jauh",
+    translation: {
+      title: "Perseverance",
+      text: "I keep going, even if the journey feels long",
+    },
   },
   {
     img: Item9,
     title: "Kebaikan Hati",
     text: "Gue ngelakuin hal baik tanpa ngarepin balasan",
+    translation: {
+      title: "Kindness",
+      text: "I do good without expecting anything in return",
+    },
   },
   {
     img: Item10,
     title: "Pengembangan Diri",
     text: "Setiap hari gue berusaha jadi lebih baik dari kemarin",
+    translation: {
+      title: "Self-Improvement",
+      text: "Every day I strive to be better than I was yesterday",
+    },
   },
 ];
 
@@ -165,13 +173,6 @@ const Cards = () => {
     };
   }, []);
 
-  // const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
-
-  // const isInView = useInView(ref, {
-  //   once: true,
-  //   margin: marginValue,
-  // });
-
   const getSelectedIndex = (currentSlideIndex) => {
     return currentSlideIndex % items.length;
   };
@@ -190,10 +191,10 @@ const Cards = () => {
 
     setSelectedItems((prev) => {
       if (
-        !prev.some((text) => text === items[selectedIndex].text) &&
+        !prev.some((text) => text === items[selectedIndex].translation.text) &&
         prev.length < 3
       ) {
-        return [...prev, items[selectedIndex].text];
+        return [...prev, items[selectedIndex].translation.text];
       }
       return prev;
     });
@@ -209,23 +210,7 @@ const Cards = () => {
       const lastRemovedIndex = updatedActive.pop();
 
       setSelectedItems((prevSelected) => {
-        const textToRemove = items[lastRemovedIndex].text;
-        return prevSelected.filter((text) => text !== textToRemove);
-      });
-
-      return updatedActive;
-    });
-  }, []);
-
-  const handleRemoveSpecificCard = useCallback(() => {
-    setActiveCards((prevActive) => {
-      if (prevActive.length === 0) return prevActive;
-
-      const updatedActive = [...prevActive];
-      const lastRemovedIndex = updatedActive.pop();
-
-      setSelectedItems((prevSelected) => {
-        const textToRemove = items[lastRemovedIndex].text;
+        const textToRemove = items[lastRemovedIndex].translation.text;
         return prevSelected.filter((text) => text !== textToRemove);
       });
 
@@ -283,7 +268,7 @@ const Cards = () => {
 
         if (!isActive && activeCards.length < 3) {
           setActiveCards((prev) => [...prev, index]);
-          setSelectedItems((prev) => [...prev, item.text]);
+          setSelectedItems((prev) => [...prev, item.translation.text]);
         }
 
         sliderRef.current?.slickGoTo(index);
@@ -297,23 +282,6 @@ const Cards = () => {
           whileTap={!isActive ? { scale: 0.97 } : {}}
         >
           <div className={style.cards__item__container}>
-            {/* {isActive && (
-              <motion.div className={style.cards__item__top}>
-                <motion.div className={style.card__number}>
-                  <p>{selectedIndex}/3</p>
-                </motion.div>
-                <motion.button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveSpecificCard(index);
-                  }}
-                  whileHover={{ scale: 1.2, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Close />
-                </motion.button>
-              </motion.div>
-            )} */}
             <motion.div className={style.cards__item__img}>
               <Icon />
             </motion.div>
@@ -328,43 +296,27 @@ const Cards = () => {
   }, [activeCards, selectedItems]);
 
   return (
-    <motion.section className={style.cards} ref={ref}>
+    <section className={style.cards}>
       <div className="container">
-        <motion.div
-          className={style.cards__wrapper}
-          // animate={isInView ? "visible" : "hidden"}
-          // variants={containerVariants}
-          // initial="hidden"
-        >
-          <motion.h2 variants={itemVariants}>
-            Bangun papan keinginanmu
-          </motion.h2>
-          <motion.p variants={itemVariants}>
+        <div className={style.cards__wrapper}>
+          <h2>Bangun papan keinginanmu</h2>
+          <p>
             Tekan ikon + dan pilih 3 gambar yang sesuai dengan nilai-nilaimu.
             Buatlah kolasemu sendiri dan unduh papan keinginan ke smartphonemu
-          </motion.p>
+          </p>
 
-          <motion.img
-            src={iphone}
-            alt="iphone"
-            // variants={itemVariants}
-            // transition={{ type: "spring", stiffness: 300 }}
-          />
+          <img src={iphone} alt="iphone" />
 
-          <motion.div className={style.cards__list} variants={itemVariants}>
+          <div className={style.cards__list}>
             <Slider ref={sliderRef} {...settings}>
               {renderCards()}
             </Slider>
-          </motion.div>
+          </div>
 
-          <motion.div className={style.cards__panel} variants={itemVariants}>
-            <motion.button
-              onClick={handleRemoveCard}
-              // whileHover={buttonHover}
-              // whileTap={buttonTap}
-            >
+          <div className={style.cards__panel}>
+            <button onClick={handleRemoveCard}>
               <X />
-            </motion.button>
+            </button>
 
             <p>Dipilih: {selectedItems.length}/3</p>
 
@@ -376,24 +328,18 @@ const Cards = () => {
             >
               <Check />
             </motion.button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
-      <motion.div
-        onClick={() => setIsPopupOpen(false)}
-        // initial={{ opacity: 0 }}
-        // animate={{ opacity: 1 }}
-        // exit={{ opacity: 0 }}
-        // transition={{ duration: 0.3 }}
-      >
+      <div onClick={() => setIsPopupOpen(false)}>
         <Popup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
           selectedItems={selectedItems}
         />
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 };
 

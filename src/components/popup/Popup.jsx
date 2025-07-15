@@ -50,7 +50,7 @@ const contentVariants = {
   exit: { opacity: 0, y: 10 },
 };
 
-const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
+const Popup = React.memo(({ onClose, selectedItems, isOpen }) => {
   const wrapperRef = useRef();
   const canvasRef = useRef(null);
 
@@ -98,47 +98,61 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
   }, []);
 
   useEffect(() => {
-    if (!wallpaperLoaded || !isOpen) return;
+    if (!wallpaperLoaded || !isOpen || !selectedItems?.length) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
     const image = new Image();
-    image.crossOrigin = "anonymous";
-    image.src = wallpaper;
-
     image.onload = () => {
-      canvas.width = image.width;
-      canvas.height = image.height;
+      try {
+        canvas.width = image.width;
+        canvas.height = image.height;
 
-      ctx.drawImage(image, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "white";
-      ctx.font = "64px sans-serif";
-      ctx.textBaseline = "top";
+        ctx.drawImage(image, 0, 0);
 
-      const lineHeight = 72;
-      const positions = [
-        { x: 980, y: 1120 },
-        { x: 140, y: 2030 },
-        { x: 940, y: 2980 },
-      ];
+        ctx.fillStyle = "white";
+        ctx.font = "26px 'Arial', sans-serif"; // Явно указываем fallback шрифт
+        ctx.textBaseline = "top";
 
-      selectedItems.forEach((text, index) => {
-        const { x, y } = positions[index];
-        const lines = wrapText(ctx, text, 520);
-        lines.forEach((line, i) => {
-          ctx.fillText(line, x, y + i * lineHeight);
+        const lineHeight = 36;
+        const positions = [
+          { x: 495, y: 562 },
+          { x: 65, y: 1030 },
+          { x: 500, y: 1480 },
+        ];
+
+        if (selectedItems.length > positions.length) {
+          console.warn("Too many items, only first 3 will be rendered");
+        }
+
+        selectedItems.slice(0, 3).forEach((text, index) => {
+          if (!text) return;
+
+          const { x, y } = positions[index];
+          const lines = wrapText(ctx, text, 280);
+
+          lines.forEach((line, i) => {
+            ctx.fillText(line, x, y + i * lineHeight);
+          });
         });
-      });
 
-      setImageLoaded(true);
+        setImageLoaded(true);
+      } catch (error) {
+        console.error("Error drawing on canvas:", error);
+        setImageLoaded(false);
+      }
     };
 
     image.onerror = () => {
       console.error("Failed to load wallpaper image");
+      setImageLoaded(false);
     };
+
+    image.src = wallpaper;
   }, [wallpaperLoaded, isOpen, selectedItems, wrapText]);
 
   const handleDownload = useCallback(() => {
@@ -163,9 +177,6 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
         <motion.div
           className={style.popup}
           onClick={onClose}
-          // initial="hidden"
-          // animate="visible"
-          // exit="exit"
           variants={backdropVariants}
           transition={{ duration: 0.3 }}
         >
@@ -185,18 +196,12 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
                 <div className={style.popup__left}>
                   <div className={style.popup__left__text}>
                     <motion.h2
-                      // initial="hidden"
-                      // animate="visible"
-                      // exit="exit"
                       variants={contentVariants}
                       transition={{ delay: 0.2 }}
                     >
                       Kartu Harapan Sudah Siap!
                     </motion.h2>
                     <motion.p
-                      // initial="hidden"
-                      // animate="visible"
-                      // exit="exit"
                       variants={contentVariants}
                       transition={{ delay: 0.3 }}
                     >
@@ -207,9 +212,6 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
 
                   <motion.div
                     className={style.popup__button}
-                    // initial="hidden"
-                    // animate="visible"
-                    // exit="exit"
                     variants={contentVariants}
                     transition={{ delay: 0.4 }}
                   >
@@ -226,15 +228,9 @@ const Popup = (React.memo = ({ onClose, selectedItems, isOpen }) => {
                   </motion.div>
                 </div>
 
-                <motion.div
-                  className={style.popup__right}
-                  // initial={{ opacity: 0, scale: 0.9 }}
-                  // animate={{ opacity: 1, scale: 1 }}
-                  // exit={{ opacity: 0, scale: 0.95 }}
-                  // transition={{ delay: 0.3, type: "spring" }}
-                >
+                <div className={style.popup__right}>
                   <img src={popupPhone} loading="eager" alt="wallpaper" />
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           </div>

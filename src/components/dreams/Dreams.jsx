@@ -8,12 +8,10 @@ import Item5 from "@assets/images/dreams/item-5.svg?react";
 import Item6 from "@assets/images/dreams/item-6.svg?react";
 import Item7 from "@assets/images/dreams/item-7.svg?react";
 import Item8 from "@assets/images/dreams/item-8.svg?react";
-
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Dreams = () => {
   const ref = useRef(null);
-
   const [selectedItem, setSelectedItem] = useState(null);
   const [randomPercent, setRandomPercent] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -27,62 +25,22 @@ const Dreams = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const marginValue = windowWidth <= 900 ? "-100px" : "-400px";
-
-  const isInView = useInView(ref, {
-    once: true,
-    margin: marginValue,
-  });
-
   const originalList1 = [
-    {
-      img: Item1,
-      title: "Mobil Impian",
-    },
-    {
-      img: Item2,
-      title: "Jalan-jalan Keliling Dunia",
-    },
-    {
-      img: Item3,
-      title: "Karier Sukses",
-    },
-    {
-      img: Item4,
-      title: "Kebebasan Finansial",
-    },
-    {
-      img: Item5,
-      title: "Hidup Damai dan Selaras",
-    },
+    { img: Item1, title: "Mobil Impian" },
+    { img: Item2, title: "Jalan-jalan Keliling Dunia" },
+    { img: Item3, title: "Karier Sukses" },
+    { img: Item4, title: "Kebebasan Finansial" },
+    { img: Item5, title: "Hidup Damai dan Selaras" },
   ];
 
   const originalList2 = [
-    {
-      img: Item6,
-      title: "Bantu Orang Tua",
-    },
-    {
-      img: Item7,
-      title: "Pendidikan Anak",
-    },
-    {
-      img: Item8,
-      title: "Rumah Impian",
-    },
+    { img: Item6, title: "Bantu Orang Tua" },
+    { img: Item7, title: "Pendidikan Anak" },
+    { img: Item8, title: "Rumah Impian" },
   ];
 
   const [list1, setList1] = useState(originalList1);
   const [list2, setList2] = useState(originalList2);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     if (windowWidth <= 900) {
@@ -111,36 +69,17 @@ const Dreams = () => {
     }
   };
 
-  // Анимация для элементов списка
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    }),
-  };
-
   return (
     <section className={style.dreams} ref={ref}>
       <div className="container">
         <div className={style.dreams__wrapper}>
-          <motion.div
-            className={style.dreams__top}
-            // initial={{ opacity: 0, y: 30 }}
-            // animate={isInView ? { opacity: 1, y: 0 } : {}}
-            // transition={{ duration: 0.6 }}
-          >
+          <div className={style.dreams__top}>
             <h2>Yuk, pilih mimpi kamu!</h2>
             <p>Lihat berapa banyak yang punya mimpi serupa</p>
-          </motion.div>
+          </div>
 
-          <motion.ul className={style.dreams__list}>
-            {list1.map(({ img, title }, index) => {
+          <ul className={style.dreams__list}>
+            {list1.map(({ img, title }) => {
               const Icon = img;
               const isSelected = selectedItem === title;
 
@@ -153,39 +92,23 @@ const Dreams = () => {
                   onClick={() => handleItemClick(title)}
                   whileHover={!isSelected ? { scale: 1.05 } : {}}
                   whileTap={!isSelected ? { scale: 0.95 } : {}}
-                  // variants={itemVariants}
-                  // initial="hidden"
-                  // animate={isInView ? "visible" : "hidden"}
-                  custom={index}
                 >
                   <motion.div
                     className={style.card}
                     animate={{ rotateY: isSelected ? 180 : 0 }}
                     transition={{ duration: 0.6 }}
                   >
-                    {/* Передняя сторона карточки */}
                     {!isSelected && (
-                      <motion.div
-                        className={style.card__front}
-                        initial={{ opacity: 1 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
+                      <div className={style.card__front}>
                         <div className={style.card__img}>
                           <Icon />
                         </div>
                         <p>{title}</p>
-                      </motion.div>
+                      </div>
                     )}
 
-                    {/* Обратная сторона карточки */}
                     {isSelected && (
-                      <motion.div
-                        className={style.card__back}
-                        initial={{ opacity: 0, rotateY: 180 }}
-                        animate={{ opacity: 1, rotateY: 0 }}
-                        exit={{ opacity: 0 }}
-                      >
+                      <div className={style.card__back}>
                         <motion.div
                           className={style.percent}
                           initial={{ scale: 0 }}
@@ -197,23 +120,22 @@ const Dreams = () => {
                             delay: 0.3,
                           }}
                         >
-                          <p>{randomPercent}%</p>
-                          <p className={style.card__title}>{title}</p>
+                          <p>73%</p>
+                          <p className={style.card__title}>Ingin yang sama</p>
                         </motion.div>
-                      </motion.div>
+                      </div>
                     )}
                   </motion.div>
                 </motion.li>
               );
             })}
-          </motion.ul>
+          </ul>
 
           {list2.length > 0 && (
-            <motion.ul className={style.dreams__list}>
-              {list2.map(({ img, title }, index) => {
+            <ul className={style.dreams__list}>
+              {list2.map(({ img, title }) => {
                 const Icon = img;
                 const isSelected = selectedItem === title;
-                const adjustedIndex = index + list1.length; // Смещаем индекс для второй группы
 
                 return (
                   <motion.li
@@ -224,37 +146,21 @@ const Dreams = () => {
                     onClick={() => handleItemClick(title)}
                     whileHover={!isSelected ? { scale: 1.05 } : {}}
                     whileTap={!isSelected ? { scale: 0.95 } : {}}
-                    // variants={itemVariants}
-                    // initial="hidden"
-                    // animate={isInView ? "visible" : "hidden"}
-                    custom={adjustedIndex}
                   >
                     <motion.div
                       className={style.card}
                       animate={{ rotateY: isSelected ? 180 : 0 }}
                       transition={{ duration: 0.6 }}
                     >
-                      {/* Передняя сторона карточки */}
                       {!isSelected && (
-                        <motion.div
-                          className={style.card__front}
-                          initial={{ opacity: 1 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
+                        <div className={style.card__front}>
                           <Icon />
                           <p>{title}</p>
-                        </motion.div>
+                        </div>
                       )}
 
-                      {/* Обратная сторона карточки */}
                       {isSelected && (
-                        <motion.div
-                          className={style.card__back}
-                          initial={{ opacity: 0, rotateY: 180 }}
-                          animate={{ opacity: 1, rotateY: 0 }}
-                          exit={{ opacity: 0 }}
-                        >
+                        <div className={style.card__back}>
                           <motion.div
                             className={style.percent}
                             initial={{ scale: 0 }}
@@ -266,16 +172,16 @@ const Dreams = () => {
                               delay: 0.3,
                             }}
                           >
-                            <p>{randomPercent}%</p>
-                            <p className={style.card__title}>{title}</p>
+                            <p>73%</p>
+                            <p className={style.card__title}>Ingin yang sama</p>
                           </motion.div>
-                        </motion.div>
+                        </div>
                       )}
                     </motion.div>
                   </motion.li>
                 );
               })}
-            </motion.ul>
+            </ul>
           )}
         </div>
       </div>
