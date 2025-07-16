@@ -237,6 +237,8 @@
     margin-right: 100px;
 
     img {
+      width: 500px;
+      height: auto;
       @media (max-width: 585px) {
         width: 400px;
         height: auto;
