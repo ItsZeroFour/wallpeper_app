@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import style from "./header.module.scss";
 import { Link } from "react-router-dom";
-import logo from "@assets/logo.svg";
+import Logo from "@assets/logo.svg?react";
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <header className={style.header}>
       <div className="container">
         <div className={style.header__wrapper}>
           <Link to="/">
-            <img src={logo} alt="logo" />
+            <Logo />
           </Link>
         </div>
       </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import style from "./banner.module.scss";
 
-const Banner = () => {
+const Banner: React.FC = () => {
   return (
     <section className={style.banner}>
       <div className="container">

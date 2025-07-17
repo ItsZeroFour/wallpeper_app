@@ -11,10 +11,19 @@ import img3 from "@assets/images/slider/image-3.webp";
 import img4 from "@assets/images/slider/image-4.webp";
 import { motion, useInView } from "framer-motion";
 
-const SliderList = () => {
-  const sliderRef = useRef();
-  const sectionRef = useRef();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+interface Slide {
+  id: number;
+  img: string;
+  title: string;
+  text: string;
+}
+
+const SliderList: React.FC = () => {
+  const sliderRef = useRef<Slider | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [windowWidth, setWindowWidth] = useState<number>(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,7 +41,7 @@ const SliderList = () => {
     margin: marginValue,
   });
 
-  const settings = {
+  const settings: React.ComponentProps<typeof Slider> = {
     dots: false,
     infinite: false,
     speed: 500,
@@ -58,76 +67,12 @@ const SliderList = () => {
     ],
   };
 
-  const slides = [
-    {
-      id: 1,
-      img: img1,
-      title: "Global",
-      text: "Sekitar 1 juta trader aktif dari seluruh dunia, setiap hari",
-    },
-    {
-      id: 2,
-      img: img2,
-      title: "Simpel",
-      text: "Tampilan yang gampang dipakai & banyak alat trading lengkap",
-    },
-    {
-      id: 3,
-      img: img3,
-      title: "Fleksibel",
-      text: "Trading buka 24/7. Pakai versi desktop atau aplikasi sesukamu",
-    },
-    {
-      id: 4,
-      img: img4,
-      title: "Minimal Trade $1",
-      text: "Siapa aja bisa ikut trading",
-    },
+  const slides: Slide[] = [
+    { id: 1, img: img1 as unknown as string, title: "Global", text: "..." },
+    { id: 2, img: img2 as unknown as string, title: "Simpel", text: "..." },
+    { id: 3, img: img3 as unknown as string, title: "Fleksibel", text: "..." },
+    { id: 4, img: img4 as unknown as string, title: "Minimal Trade $1", text: "..." },
   ];
-
-  // Анимации
-  const titleVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 0.77, 0.47, 0.97],
-      },
-    },
-  };
-
-  const navVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: 0.3,
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const slideItemVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.95 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        delay: i * 0.15,
-        duration: 0.7,
-        ease: [0.16, 0.77, 0.47, 0.97],
-      },
-    }),
-    hover: {
-      y: -10,
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-  };
 
   return (
     <section className={style.slider} ref={sectionRef}>
@@ -138,13 +83,11 @@ const SliderList = () => {
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
-            <motion.h2 variants={titleVariants}>
-              Stockity, jalan aman buat ngejar mimpi kamu
-            </motion.h2>
+            <h2>Stockity, jalan aman buat ngejar mimpi kamu</h2>
 
-            <motion.div className={style.slider__nav} variants={navVariants}>
+            <div className={style.slider__nav}>
               <motion.button
-                onClick={() => sliderRef.current.slickPrev()}
+                onClick={() => sliderRef.current?.slickPrev()}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -152,13 +95,13 @@ const SliderList = () => {
               </motion.button>
 
               <motion.button
-                onClick={() => sliderRef.current.slickNext()}
+                onClick={() => sliderRef.current?.slickNext()}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <ArrowRight />
               </motion.button>
-            </motion.div>
+            </div>
           </motion.div>
 
           <div className={style.slider__main}>
@@ -168,9 +111,6 @@ const SliderList = () => {
                   key={slide.id}
                   className={style.slider__item}
                   custom={index}
-                  // initial="hidden"
-                  // animate={isInView ? "visible" : "hidden"}
-                  // variants={slideItemVariants}
                   whileTap={{ scale: 0.97 }}
                 >
                   <div className={style.slider__content}>

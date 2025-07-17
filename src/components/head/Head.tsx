@@ -3,7 +3,7 @@ import style from "./head.module.scss";
 import { Link } from "react-router-dom";
 import person from "@assets/images/head/person.png";
 
-const Head = () => {
+const Head: React.FC = () => {
   return (
     <section className={style.head}>
       <div className="container">
@@ -22,7 +22,7 @@ const Head = () => {
           </div>
 
           <div className={style.head__right}>
-            <img src={person} alt="person" />
+            <img src={person as unknown as string} alt="person" />
           </div>
         </div>
       </div>

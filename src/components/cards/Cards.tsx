@@ -5,7 +5,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import style from "./cards.module.scss";
 import iphone from "@assets/images/cards/iPhone.png";
 import Item1 from "@assets/images/cards/slider/item-1.svg?react";
@@ -18,23 +18,12 @@ import Item7 from "@assets/images/cards/slider/item-7.svg?react";
 import Item8 from "@assets/images/cards/slider/item-8.svg?react";
 import Item9 from "@assets/images/cards/slider/item-9.svg?react";
 import Item10 from "@assets/images/cards/slider/item-10.svg?react";
-import Slider from "react-slick";
+import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import X from "@assets/images/cards/x.svg?react";
 import Check from "@assets/images/cards/check.svg?react";
-import Close from "@assets/icons/close.svg?react";
 import Popup from "../popup/Popup";
-
-// Анимации
-const buttonHover = {
-  scale: 1.1,
-  transition: { type: "spring", stiffness: 400 },
-};
-
-const buttonTap = {
-  scale: 0.95,
-};
 
 const items = [
   {
@@ -129,42 +118,25 @@ const items = [
   },
 ];
 
-const Cards = () => {
-  const sliderRef = useRef();
+const Cards: React.FC = () => {
+  const sliderRef = useRef<Slider | null>(null);
   const isDragging = useRef(false);
 
-  const [activeCards, setActiveCards] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [activeCards, setActiveCards] = useState<number[]>([]);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    let timeoutId;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setWindowWidth(window.innerWidth);
-      }, 150);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timeoutId);
-    };
-  }, []);
 
   useEffect(() => {
     let startX = 0;
     let startY = 0;
 
-    const handlePointerDown = (e) => {
+    const handlePointerDown = (e: PointerEvent) => {
       startX = e.clientX;
       startY = e.clientY;
       isDragging.current = false;
     };
 
-    const handlePointerMove = (e) => {
+    const handlePointerMove = (e: PointerEvent) => {
       const dx = Math.abs(e.clientX - startX);
       const dy = Math.abs(e.clientY - startY);
       if (dx > 5 || dy > 5) {
@@ -189,14 +161,15 @@ const Cards = () => {
     };
   }, []);
 
-  const getSelectedIndex = (currentSlideIndex) => {
+  const getSelectedIndex = (currentSlideIndex: number): number => {
     return currentSlideIndex % items.length;
   };
 
   const handleAddCard = useCallback(() => {
     const currentSlideIndex =
-      sliderRef.current?.innerSlider?.state?.currentSlide ?? 0;
-    const selectedIndex = getSelectedIndex(currentSlideIndex, windowWidth);
+      (sliderRef.current?.innerSlider as any)?.state?.currentSlide ?? 0;
+
+    const selectedIndex = getSelectedIndex(currentSlideIndex);
 
     setActiveCards((prev) => {
       if (!prev.includes(selectedIndex) && prev.length < 3) {
@@ -215,15 +188,15 @@ const Cards = () => {
       return prev;
     });
 
-    sliderRef.current?.slickNext?.();
-  }, [windowWidth]);
+    sliderRef.current?.slickNext();
+  }, []);
 
   const handleRemoveCard = useCallback(() => {
     setActiveCards((prevActive) => {
       if (prevActive.length === 0) return prevActive;
 
       const updatedActive = [...prevActive];
-      const lastRemovedIndex = updatedActive.pop();
+      const lastRemovedIndex = updatedActive.pop()!;
 
       setSelectedItems((prevSelected) => {
         const textToRemove = items[lastRemovedIndex].translation.text;
@@ -243,7 +216,7 @@ const Cards = () => {
     }
   }, [selectedItems]);
 
-  const settings = useMemo(
+  const settings: Settings = useMemo(
     () => ({
       dots: false,
       infinite: true,
@@ -278,9 +251,7 @@ const Cards = () => {
       const Icon = item.img;
       const isActive = activeCards.includes(index);
 
-      const handleCardClick = (e) => {
-        console.log(isDragging.current);
-
+      const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isDragging.current) return;
 
         if (!isActive && activeCards.length < 3) {
@@ -312,7 +283,7 @@ const Cards = () => {
         </motion.div>
       );
     });
-  }, [activeCards, selectedItems]);
+  }, [activeCards]);
 
   return (
     <section className={style.cards}>
@@ -324,7 +295,7 @@ const Cards = () => {
             Buatlah kolasemu sendiri dan unduh papan keinginan ke smartphonemu
           </p>
 
-          <img src={iphone} alt="iphone" />
+          <img src={iphone as unknown as string} alt="iphone" />
 
           <div className={style.cards__list}>
             <Slider ref={sliderRef} {...settings}>
@@ -339,14 +310,14 @@ const Cards = () => {
 
             <p>Dipilih: {selectedItems.length}/3</p>
 
-            <motion.button
+            <button
               onClick={handleAddCard}
-              whileHover={buttonHover}
-              whileTap={buttonTap}
+              // whileHover={buttonHover as unknown as string}
+              // whileTap={buttonTap}
               disabled={selectedItems.length >= 3}
             >
               <Check />
-            </motion.button>
+            </button>
           </div>
         </div>
       </div>

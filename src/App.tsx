@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 const Banner = React.lazy(() => import("@components/banner/Banner"));
 const Cards = React.lazy(() => import("@components/cards/Cards"));
@@ -8,21 +8,29 @@ const Head = React.lazy(() => import("@components/head/Head"));
 const Header = React.lazy(() => import("@components/header/Header"));
 const SliderList = React.lazy(() => import("@components/slider/SliderList"));
 
+// import { checkAuthorization, checkStatus } from "./api/mockAuth";
+
 function App() {
   return (
     <div className="page">
       <div className="wrapper">
-        <Header />
+        <Suspense fallback={null}>
+          <Header />
+        </Suspense>
 
         <main>
-          <Head />
-          <Banner />
-          <Cards />
-          <Dreams />
-          <SliderList />
+          <Suspense fallback={null}>
+            <Head />
+            <Banner />
+            <Cards />
+            <Dreams />
+            <SliderList />
+          </Suspense>
         </main>
 
-        <Footer />
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
       </div>
     </div>
   );
