@@ -131,7 +131,6 @@ const items = [
 
 const Cards = () => {
   const sliderRef = useRef();
-  const ref = useRef(null);
   const isDragging = useRef(false);
 
   const [activeCards, setActiveCards] = useState([]);
@@ -156,20 +155,37 @@ const Cards = () => {
   }, []);
 
   useEffect(() => {
-    const handleMouseDown = () => {
+    let startX = 0;
+    let startY = 0;
+
+    const handlePointerDown = (e) => {
+      startX = e.clientX;
+      startY = e.clientY;
       isDragging.current = false;
     };
 
-    const handleMouseMove = () => {
-      isDragging.current = true;
+    const handlePointerMove = (e) => {
+      const dx = Math.abs(e.clientX - startX);
+      const dy = Math.abs(e.clientY - startY);
+      if (dx > 5 || dy > 5) {
+        isDragging.current = true;
+      }
     };
 
-    document.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mousemove", handleMouseMove);
+    const handlePointerUp = () => {
+      setTimeout(() => {
+        isDragging.current = false;
+      }, 0);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
 
     return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
     };
   }, []);
 
@@ -261,9 +277,10 @@ const Cards = () => {
     return items.map((item, index) => {
       const Icon = item.img;
       const isActive = activeCards.includes(index);
-      const selectedIndex = activeCards.indexOf(index) + 1;
 
-      const handleCardClick = () => {
+      const handleCardClick = (e) => {
+        console.log(isDragging.current);
+
         if (isDragging.current) return;
 
         if (!isActive && activeCards.length < 3) {
@@ -271,7 +288,9 @@ const Cards = () => {
           setSelectedItems((prev) => [...prev, item.translation.text]);
         }
 
-        sliderRef.current?.slickGoTo(index);
+        requestAnimationFrame(() => {
+          sliderRef.current?.slickGoTo(index);
+        });
       };
 
       return (
