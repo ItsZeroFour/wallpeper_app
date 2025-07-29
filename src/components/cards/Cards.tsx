@@ -25,6 +25,29 @@ import X from "@assets/images/cards/x.svg?react";
 import Check from "@assets/images/cards/check.svg?react";
 import Popup from "../popup/Popup";
 
+interface CardItem {
+  title: string;
+  text: string;
+  translation: {
+    text: string;
+  };
+}
+
+interface CardProps {
+  item: CardItem;
+  index: number;
+  isActive: boolean;
+  handleCardClick: () => void;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+}
+
+interface CardComponentProps {
+  item: typeof items[0];
+  index: number;
+  isActive: boolean;
+  handleCardClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
 const items = [
   {
     img: Item1,
@@ -126,6 +149,7 @@ const Cards: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  // ⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️
   useEffect(() => {
     let startX = 0;
     let startY = 0;
@@ -160,6 +184,7 @@ const Cards: React.FC = () => {
       document.removeEventListener("pointerup", handlePointerUp);
     };
   }, []);
+  // ⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️⬆️
 
   const getSelectedIndex = (currentSlideIndex: number): number => {
     return currentSlideIndex % items.length;
@@ -171,16 +196,18 @@ const Cards: React.FC = () => {
 
     const selectedIndex = getSelectedIndex(currentSlideIndex);
 
-    setActiveCards((prev) => {
+    setActiveCards((prev: number[]) => {
       if (!prev.includes(selectedIndex) && prev.length < 3) {
         return [...prev, selectedIndex];
       }
       return prev;
     });
 
-    setSelectedItems((prev) => {
+    setSelectedItems((prev: string[]) => {
       if (
-        !prev.some((text) => text === items[selectedIndex].translation.text) &&
+        !prev.some(
+          (text: string) => text === items[selectedIndex].translation.text
+        ) &&
         prev.length < 3
       ) {
         return [...prev, items[selectedIndex].translation.text];
@@ -192,20 +219,20 @@ const Cards: React.FC = () => {
   }, []);
 
   const handleRemoveCard = useCallback(() => {
-    setActiveCards((prevActive) => {
+    setActiveCards((prevActive: number[]) => {
       if (prevActive.length === 0) return prevActive;
 
       const updatedActive = [...prevActive];
       const lastRemovedIndex = updatedActive.pop()!;
 
-      setSelectedItems((prevSelected) => {
+      setSelectedItems((prevSelected: string[]) => {
         const textToRemove = items[lastRemovedIndex].translation.text;
-        return prevSelected.filter((text) => text !== textToRemove);
+        return prevSelected.filter((text: string) => text !== textToRemove);
       });
 
       return updatedActive;
     });
-  }, []);
+  }, [items]);
 
   useEffect(() => {
     if (selectedItems.length === 3) {
@@ -255,8 +282,11 @@ const Cards: React.FC = () => {
         if (isDragging.current) return;
 
         if (!isActive && activeCards.length < 3) {
-          setActiveCards((prev) => [...prev, index]);
-          setSelectedItems((prev) => [...prev, item.translation.text]);
+          setActiveCards((prev: number[]) => [...prev, index]);
+          setSelectedItems((prev: string[]) => [
+            ...prev,
+            item.translation.text,
+          ]);
         }
 
         requestAnimationFrame(() => {
@@ -269,7 +299,7 @@ const Cards: React.FC = () => {
           key={`card-${index}`}
           className={`${style.cards__item} ${isActive ? style.active : ""}`}
           onClick={handleCardClick}
-          whileTap={!isActive ? { scale: 0.97 } : {}}
+          whileTap={!isActive ? { scale: 0.97 } : undefined}
         >
           <div className={style.cards__item__container}>
             <motion.div className={style.cards__item__img}>
